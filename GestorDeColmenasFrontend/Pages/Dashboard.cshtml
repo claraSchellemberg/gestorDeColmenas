@@ -1,0 +1,180 @@
+﻿@page
+@using GestorDeColmenasFrontend.Pages
+@model GestorDeColmenasFrontend.Pages.DashboardModel
+@{
+    Layout = null; // o el layout que uses, p.e. "_Layout"
+}
+
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Apiarios - Dashboard</title>
+
+    <!-- Tailwind (usa la misma configuración que tus archivos) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#FFC107",
+                "background-light": "#F8F9FA",
+                "background-dark": "#1e293b",
+                "card-light": "#FFFFFF",
+                "card-dark": "#334155",
+                "text-light": "#343A40",
+                "text-dark": "#e2e8f0",
+                "border-light": "#e5e7eb",
+                "border-dark": "#475569",
+                "accent-honey": "#E69B00",
+                "accent-green": "#4CAF50",
+                "accent-blue": "#2196F3",
+                "accent-orange": "#FF9800",
+              },
+              fontFamily: { "display": ["Inter", "sans-serif"] },
+              borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+            }
+          }
+        };
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="flex h-screen w-full flex-col">
+
+    <!-- Header (idéntico a tus archivos) -->
+    <header class="flex items-center justify-between border-b border-solid border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-6 py-3 shadow-sm flex-shrink-0">
+        <div class="flex items-center gap-4 text-text-light dark:text-text-dark">
+            <div class="text-primary size-8">
+                <!-- svg igual al que usaste -->
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21.92,8.44l-8-4.57a2,2,0,0,0-1.84,0l-8,4.57a2,2,0,0,0-1,1.73V13.8a2,2,0,0,0,.13,2.44,1,1,0,0,0,.87.56H12a1,1,0,0,0,1-1V13.5a1,1,0,0,1,2,0V20a1,1,0,0,0,2,0V13.5a1,1,0,0,1,2,0v2.3a2,2,0,0,0,1,1.73l.2,0a2,2,0,0,0,1.72-1,2,2,0,0,0,.08-1V10.17A2,2,0,0,0,21.92,8.44ZM12,11.25a2.75,2.75,0,1,1,2.75-2.75A2.75,2.75,0,0,1,12,11.25Z"></path>
+                </svg>
+            </div>
+            <h1 class="text-lg font-bold">Gestión de Apiarios</h1>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button class="flex h-10 w-10 items-center justify-center rounded-full bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10"
+                 style="background-image: url('@(Model.ViewModel?.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")');"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10">
+        <div class="mx-auto max-w-7xl">
+
+            <!-- Título + botón -->
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+                <h2 class="text-text-light dark:text-text-dark text-3xl md:text-3xl font-black tracking-tight">Dashboard Minimalista</h2>
+
+                <div class="flex flex-wrap gap-3">
+                    <button id="btnAgregarApiario" class="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-gray-800 hover:bg-accent-honey">
+                        <span class="material-symbols-outlined">add</span>
+                        <span class="truncate">Agregar Apiario</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Cards responsive (idénticas a las tuyas) -->
+            <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                    <p class="text-base font-medium text-text-light dark:text-text-dark">Número Total de Apiarios</p>
+                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@Model.ViewModel?.Metricas?.Apiarios ?? 0</p>
+                </div>
+
+                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                    <p class="text-base font-medium text-text-light dark:text-text-dark">Número Total de Colmenas</p>
+                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@Model.ViewModel?.Metricas?.Colmenas ?? 0</p>
+                </div>
+
+                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                    <p class="text-base font-medium text-text-light dark:text-text-dark">Colmenas en Buen Estado</p>
+                    <p class="text-3xl font-bold tracking-tight text-accent-green">@Model.ViewModel?.Metricas?.BuenEstado ?? 0</p>
+                </div>
+
+                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                    <p class="text-base font-medium text-text-light dark:text-text-dark">Alertas Pendientes</p>
+                    <p class="text-3xl font-bold tracking-tight text-accent-orange">@Model.ViewModel?.Metricas?.Alertas ?? 0</p>
+                </div>
+            </div>
+
+            <!-- Mapa (estructura/designer identical) -->
+            <div class="rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                <h3 class="mb-4 text-lg font-bold text-text-light dark:text-text-dark">Ubicación de Apiarios</h3>
+
+                <div class="relative h-96 w-full overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700">
+                    <img class="h-full w-full object-cover opacity-50"
+                         src="@(Model.ViewModel?.Mapa?.Imagen ?? "https://via.placeholder.com/800x450")"
+                         alt="Mapa de apiarios" />
+
+                    <div class="absolute inset-0">
+                        @if (Model.ViewModel?.Mapa?.Puntos != null)
+                        {
+                            foreach (var punto in Model.ViewModel.Mapa.Puntos)
+                            {
+                                <div class="absolute flex items-center justify-center" style="top:@(punto.Top)%; left:@(punto.Left)%;">
+                                    <div class="h-5 w-5 rounded-full bg-primary ring-2 ring-white dark:ring-card-dark"></div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal oculto -->
+            <div id="modalApiario"
+                 class="hidden fixed inset-0 flex items-center justify-center bg-black/50">
+                <div class="bg-white dark:bg-card-dark rounded-lg shadow-lg p-6 w-96">
+                    <h2 class="text-lg font-bold mb-4">Nuevo Apiario</h2>
+                    <form method="post" asp-page-handler="AgregarApiario">
+                        @Html.AntiForgeryToken()
+                        <label class="block mb-2 text-sm font-medium">Nombre</label>
+                        <input asp-for="NuevoApiario.Nombre" name="nombre" class="border p-2 w-full mb-3 rounded"/>
+
+                        <label class="block mb-2 text-sm font-medium">Latitud</label>
+                        <input asp-for="NuevoApiario.Latitud" name="latitud" class="border p-2 w-full mb-4 rounded"/>
+
+                        <label class="block mb-2 text-sm font-medium">Longitud</label>
+                        <input asp-for="NuevoApiario.Logitud" name="longitud" class="border p-2 w-full mb-4 rounded"/>
+
+                        <label class="block mb-2 text-sm font-medium">Ubicación de referencia</label>
+                        <input asp-for="NuevoApiario.UbicacionDeReferencia" name="ubicacion" class="border p-2 w-full mb-4 rounded"/>
+
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="btnCerrarModal"
+                                    class="bg-gray-400 px-3 py-2 rounded text-white">Cancelar</button>
+                            <button type="submit"
+                                    class="bg-primary px-3 py-2 rounded text-gray-800 font-bold">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const modal = document.getElementById("modalApiario");
+        document.getElementById("btnAgregarApiario").onclick = () =>{
+            modal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+        };
+        document.getElementById("btnCerrarModal").onclick = () => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        };
+        const reabrir = "@(TempData["OpenApiarioModal"] ?? "false")".toLowerCase() === "true";
+        if (reabrir && modal) modal.classList.remove("hidden");
+    </script>
+
+</body>
+</html>
