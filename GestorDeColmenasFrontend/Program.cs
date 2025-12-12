@@ -15,9 +15,10 @@ builder.Services.AddHttpClient<IColmenaService, ColmenaService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
-
-builder.Services.AddScoped<IApiariosService, ApiarioService>();
-builder.Services.AddScoped<IColmenaService, ColmenaService>();
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
+});
 
 
 var app = builder.Build();

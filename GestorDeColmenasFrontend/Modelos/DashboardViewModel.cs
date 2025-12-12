@@ -1,9 +1,10 @@
-﻿namespace GestorDeColmenasFrontend.Modelos
+﻿using GestorDeColmenasFrontend.Dtos.Usuario;
+
+namespace GestorDeColmenasFrontend.Modelos
 {
     public class DashboardViewModel
     {
         public DashboardMetricas Metricas { get; set; } = new DashboardMetricas();
-        public MapaViewModel Mapa { get; set; } = new MapaViewModel();
-        public UsuarioViewModel Usuario { get; set; } = new UsuarioViewModel();
+        public UsuarioSimpleDto Usuario { get; set; } = new UsuarioSimpleDto();
     }
 }

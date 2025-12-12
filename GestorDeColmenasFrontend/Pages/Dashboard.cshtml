@@ -69,8 +69,8 @@
                 <span class="material-symbols-outlined">notifications</span>
             </button>
 
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10"
-                 style="background-image: url('@(Model.ViewModel?.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")');"></div>
+            <a href="/PerfilUsuario" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 hover:ring-2 hover:ring-primary transition-all"
+               style="background-image: url('@(Model.ViewModel?.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")');"></a>
         </div>
     </header>
 
@@ -91,53 +91,53 @@
             
             <!-- Cards responsive (idénticas a las tuyas) -->
             <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                <a href="/ListadoApiarios" class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm hover:shadow-md hover:border-primary transition-all cursor-pointer">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Número Total de Apiarios</p>
-                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@Model.ViewModel?.Metricas?.Apiarios ?? 0</p>
-                </div>
+                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@(Model.ViewModel?.Metricas?.Apiarios ?? 0)</p>
+                </a>
 
-                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                <a href="/ListadoColmenas" class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm hover:shadow-md hover:border-primary transition-all cursor-pointer">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Número Total de Colmenas</p>
-                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@Model.ViewModel?.Metricas?.Colmenas ?? 0</p>
-                </div>
+                    <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@(Model.ViewModel?.Metricas?.Colmenas ?? 0)</p>
+                </a>
 
                 <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Colmenas en Buen Estado</p>
-                    <p class="text-3xl font-bold tracking-tight text-accent-green">@Model.ViewModel?.Metricas?.BuenEstado ?? 0</p>
+                    <p class="text-3xl font-bold tracking-tight text-accent-green">@(Model.ViewModel?.Metricas?.BuenEstado ?? 0)</p>
                 </div>
 
                 <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Alertas Pendientes</p>
-                    <p class="text-3xl font-bold tracking-tight text-accent-orange">@Model.ViewModel?.Metricas?.Alertas ?? 0</p>
+                    <p class="text-3xl font-bold tracking-tight text-accent-orange">@(Model.ViewModel?.Metricas?.Alertas ?? 0)</p>
                 </div>
             </div>
 
             <!-- Mapa (estructura/designer identical) -->
-            <div id="mapContainer" class="rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+            <div id="mapContainer" class="rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm relative z-0">
             
                 <h3 class="mb-4 text-lg font-bold text-text-light dark:text-text-dark">Ubicación de Apiarios</h3>
 
-                <div id="map" class="h-96 w-full rounded-md"></div>
+                <div id="map" class="h-96 w-full rounded-md relative z-0"></div>
             </div>
 
             <!-- Modal oculto -->
             <div id="modalApiario"
-                 class="hidden fixed inset-0 flex items-center justify-center bg-black/50">
+                 class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                 <div class="bg-white dark:bg-card-dark rounded-lg shadow-lg p-6 w-96">
                     <h2 class="text-lg font-bold mb-4">Nuevo Apiario</h2>
-                    <form method="post" asp-page-handler="AgregarApiario">
+                    <form method="post" asp-page-handler="AgregarApiario" novalidate>
                         @Html.AntiForgeryToken()
                         <label class="block mb-2 text-sm font-medium">Nombre</label>
-                        <input asp-for="NuevoApiario.Nombre" name="nombre" class="border p-2 w-full mb-3 rounded"/>
+                        <input asp-for="NuevoApiarioDto.Nombre" class="border p-2 w-full mb-3 rounded"/>
 
                         <label class="block mb-2 text-sm font-medium">Latitud</label>
-                        <input asp-for="NuevoApiario.Latitud" name="latitud" class="border p-2 w-full mb-4 rounded"/>
+                        <input asp-for="NuevoApiarioDto.Latitud" class="border p-2 w-full mb-4 rounded"/>
 
                         <label class="block mb-2 text-sm font-medium">Longitud</label>
-                        <input asp-for="NuevoApiario.Logitud" name="longitud" class="border p-2 w-full mb-4 rounded"/>
+                        <input asp-for="NuevoApiarioDto.Longitud" class="border p-2 w-full mb-4 rounded"/>
 
                         <label class="block mb-2 text-sm font-medium">Ubicación de referencia</label>
-                        <input asp-for="NuevoApiario.UbicacionDeReferencia" name="ubicacion" class="border p-2 w-full mb-4 rounded"/>
+                        <input asp-for="NuevoApiarioDto.UbicacionDeReferencia" class="border p-2 w-full mb-4 rounded"/>
 
                         <div class="flex justify-end gap-2">
                             <button type="button" id="btnCerrarModal"
@@ -152,6 +152,8 @@
     </main>
 
 </div>
+    <!-- jQuery (necesario para validación) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
     <script>
         const modal = document.getElementById("modalApiario");
@@ -168,17 +170,32 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the map centered on coordinates
-            const map = L.map('map').setView([40.7128, -74.0060], 13); // Example: New York coordinates
-
-            // Add OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(map);
-            L.marker([-34.61358, -56.21738]).addTo(map).bindPopup('Centro Regional Sur').openPopup();
-            // Add markers for your apiarios
-            // Example: L.marker([40.7128, -74.0060]).addTo(map).bindPopup('Apiario 1');
+            try {
+                // Verificar que el elemento exista
+                const mapElement = document.getElementById('map');
+                if (!mapElement) {
+                    console.error('El elemento #map no existe en el DOM');
+                    return;
+                }
+                
+                // Inicializar el mapa
+                const map = L.map('map').setView([-34.61358, -56.21738], 13);
+                
+                // Agregar tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(map);
+                
+                // Agregar marcador
+                L.marker([-34.61358, -56.21738])
+                    .addTo(map)
+                    .bindPopup('Centro Regional Sur')
+                    .openPopup();
+                    
+            } catch (error) {
+                console.error('Error al inicializar el mapa:', error);
+            }
         });
     </script>
 </body>

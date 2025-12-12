@@ -1,4 +1,5 @@
-﻿using GestorDeColmenasFrontend.Dtos;
+﻿using GestorDeColmenasFrontend.Dtos.Apiario;
+using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Modelos;
 
 namespace GestorDeColmenasFrontend.Interfaces
@@ -6,9 +7,7 @@ namespace GestorDeColmenasFrontend.Interfaces
     public interface IApiariosService
     {
         Task<DashboardMetricas> GetMetricasAsync();
-        Task<MapaViewModel> GetMapaAsync();
-        Task<UsuarioViewModel> GetUsuarioAsync();
-
+        Task<UsuarioSimpleDto> GetUsuarioAsync();
         Task<ApiarioModel> RegistrarApiarioAsync(ApiarioCreateDto dto);
     }
 

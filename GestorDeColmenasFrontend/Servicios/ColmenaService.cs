@@ -1,4 +1,5 @@
-﻿using GestorDeColmenasFrontend.Dtos;
+﻿using GestorDeColmenasFrontend.Dtos.Colmena;
+using GestorDeColmenasFrontend.Dtos.Mediciones;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
 
@@ -11,7 +12,18 @@ namespace GestorDeColmenasFrontend.Servicios
         {
             _http = http;
         }
-
+        public Task<ColmenaDetalleDto?> GetColmenaDetalleAsync(int id)
+        {
+            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+        }
+        public Task<List<ColmenaListItemDto>> GetColmenasAsync()
+        {
+            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+        }
+        public Task<List<RegistroMedicionDto>> GetHistorialMedicionesAsync(int colmenaId, int pagina = 1, int registrosPorPagina = 10)
+        {
+            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+        }
         public async Task<ColmenaModel> RegistrarAsync(int apiarioId, ColmenaCreateDto dto)
         {
             var respuesta = await _http.PostAsJsonAsync($"api/apiarios/{apiarioId}/colmenas", dto);

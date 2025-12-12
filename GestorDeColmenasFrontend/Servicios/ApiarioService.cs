@@ -1,4 +1,5 @@
-﻿using GestorDeColmenasFrontend.Dtos;
+﻿using GestorDeColmenasFrontend.Dtos.Apiario;
+using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
 
@@ -11,40 +12,12 @@ namespace GestorDeColmenasFrontend.Servicios
 
         public Task<DashboardMetricas?> GetMetricasAsync()
         {
-            var metricas = new DashboardMetricas
-            {
-                Apiarios = 3,
-                Colmenas = 24,
-                BuenEstado = 21,
-                Alertas = 3
-            };
-            return Task.FromResult<DashboardMetricas?>(metricas);
+            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
         }
 
-        public Task<MapaViewModel?> GetMapaAsync()
+        public Task<UsuarioSimpleDto?> GetUsuarioAsync()
         {
-            var mapa = new MapaViewModel
-            {
-                // Usa cualquier imagen de fondo. Si no tienes, deja null y la cshtml usará el placeholder.
-                Imagen = "https://via.placeholder.com/800x450",
-                Puntos = new List<MapaPunto>
-                {
-                    new MapaPunto { Top = 30, Left = 20 },
-                    new MapaPunto { Top = 55, Left = 62 },
-                    new MapaPunto { Top = 78, Left = 35 }
-                }
-            };
-            return Task.FromResult<MapaViewModel?>(mapa);
-        }
-
-        public Task<UsuarioViewModel?> GetUsuarioAsync()
-        {
-            var usuario = new UsuarioViewModel
-            {
-                // La vista solo usa FotoPerfil, así que no seteamos otros campos para evitar errores si no existen.
-                FotoPerfil = "https://i.pravatar.cc/150?img=67"
-            };
-            return Task.FromResult<UsuarioViewModel?>(usuario);
+            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
         }
 
         public async Task<ApiarioModel> RegistrarApiarioAsync(ApiarioCreateDto dto)

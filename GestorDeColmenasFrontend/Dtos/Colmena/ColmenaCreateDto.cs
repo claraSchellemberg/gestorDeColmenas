@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GestorDeColmenasFrontend.Dtos
+namespace GestorDeColmenasFrontend.Dtos.Colmena
 {
     public class ColmenaCreateDto
     {
@@ -9,5 +9,7 @@ namespace GestorDeColmenasFrontend.Dtos
 
         [Required, StringLength(100)]
         public string Descripcion { get; set; }
+        public int? ApiarioId { get; set; }
+        public int CantidadCuadros { get; set; } = 1; // Por defecto 1 cuadro
     }
 }
