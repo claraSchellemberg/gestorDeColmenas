@@ -9,6 +9,6 @@ namespace GestorDeColmenasFrontend.Dtos.Apiario
         public string? Latitud { get; set; }
         public string? Longitud { get; set; }
         public string? UbicacionDeReferencia { get; set; }
-
+        public int UsuarioId { get; set; }
     }
 }

@@ -330,31 +330,56 @@
     </div>
 
     <!-- Modal Agregar Colmena -->
-    <div id="modalColmena" class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4">
+    <div id="modalColmena" class="@(Model.MostrarModal ? "" : "hidden") fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4 max-h-[90vh] overflow-y-auto">
             <h2 class="text-lg font-bold mb-4">Nueva Colmena</h2>
+            
+            <!-- Error summary -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-accent-red rounded-lg">
+                    <div class="flex items-center gap-2 text-accent-red dark:text-red-300">
+                        <span class="material-symbols-outlined text-lg">error</span>
+                        <span class="font-medium text-sm">Por favor corrija los errores:</span>
+                    </div>
+                    <ul class="mt-2 text-sm text-accent-red dark:text-red-300 list-disc list-inside">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+            
             <form method="post" asp-page-handler="AgregarColmena">
                 @Html.AntiForgeryToken()
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium mb-1">Nombre / ID</label>
-                        <input asp-for="NuevaColmena.Nombre" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Ej: C-051" />
+                        <input asp-for="NuevaColmena.Nombre" 
+                               class="w-full border @(ViewData.ModelState["NuevaColmena.Nombre"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                               placeholder="Ej: C-051" />
+                        <span asp-validation-for="NuevaColmena.Nombre" class="text-xs text-accent-red"></span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Apiario</label>
-                        <select asp-for="NuevaColmena.ApiarioId" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary">
+                        <select asp-for="NuevaColmena.ApiarioId" 
+                                asp-items="@(new SelectList(Model.Apiarios, "Id", "Nombre"))"
+                                class="w-full border @(ViewData.ModelState["NuevaColmena.ApiarioId"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary">
                             <option value="">Seleccionar apiario...</option>
-                            <option value="1">El Robledal</option>
-                            <option value="2">Los Girasoles</option>
                         </select>
+                        <span asp-validation-for="NuevaColmena.ApiarioId" class="text-xs text-accent-red"></span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Cantidad de Cuadros</label>
-                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" max="20" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
+                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" max="20" 
+                               class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Descripción</label>
-                        <textarea asp-for="NuevaColmena.Descripcion" rows="2" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Descripción opcional..."></textarea>
+                        <textarea asp-for="NuevaColmena.Descripcion" rows="2" 
+                                  class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                                  placeholder="Descripción opcional..."></textarea>
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 mt-6">

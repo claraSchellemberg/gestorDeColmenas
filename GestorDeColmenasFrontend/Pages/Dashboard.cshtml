@@ -4,13 +4,12 @@
 @{
     Layout = null; // o el layout que uses, p.e. "_Layout"
 }
-
 <!DOCTYPE html>
 <html class="light" lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión de Apiarios - Dashboard</title>
+    <title>Gestión de Apiarios - Inicio</title>
 
     <!-- Tailwind (usa la misma configuración que tus archivos) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
@@ -48,6 +47,35 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
+    
+    <!-- Custom styles for map popups -->
+    <style>
+        /* Popup verde - apiario sin peligro */
+        .popup-safe .leaflet-popup-content-wrapper,
+        .popup-safe .leaflet-popup-tip {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .popup-safe .leaflet-popup-content-wrapper a {
+            color: #E8F5E9;
+        }
+        .popup-safe .leaflet-popup-content-wrapper a:hover {
+            color: white;
+        }
+
+        /* Popup rojo - apiario con colmena en peligro */
+        .popup-danger .leaflet-popup-content-wrapper,
+        .popup-danger .leaflet-popup-tip {
+            background-color: #F44336;
+            color: white;
+        }
+        .popup-danger .leaflet-popup-content-wrapper a {
+            color: #FFCDD2;
+        }
+        .popup-danger .leaflet-popup-content-wrapper a:hover {
+            color: white;
+        }
+    </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
 <div class="flex h-screen w-full flex-col">
@@ -79,7 +107,7 @@
 
             <!-- Título + botón -->
             <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-                <h2 class="text-text-light dark:text-text-dark text-3xl md:text-3xl font-black tracking-tight">Dashboard Minimalista</h2>
+                <h2 class="text-text-light dark:text-text-dark text-3xl md:text-3xl font-black tracking-tight">Página principal</h2>
 
                 <div class="flex flex-wrap gap-3">
                     <button id="btnAgregarApiario" class="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-gray-800 hover:bg-accent-honey">
@@ -154,7 +182,6 @@
 </div>
     <!-- jQuery (necesario para validación) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <partial name="_ValidationScriptsPartial" />
     <script>
         const modal = document.getElementById("modalApiario");
         document.getElementById("btnAgregarApiario").onclick = () =>{
@@ -171,28 +198,89 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                // Verificar que el elemento exista
                 const mapElement = document.getElementById('map');
                 if (!mapElement) {
                     console.error('El elemento #map no existe en el DOM');
                     return;
                 }
                 
-                // Inicializar el mapa
-                const map = L.map('map').setView([-34.61358, -56.21738], 13);
-                
+                const apiarios = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Apiarios.Select(a => new {
+                    id = a.Id,
+                    nombre = a.Nombre,
+                    latitud = a.Latitud, 
+                    longitud = a.Longitud,
+                    ubicacion = a.UbicacionDeReferencia,
+                    hayColmenaEnPeligro = a.HayColmenaEnPeligro
+                })));
+
+                // Centro por defecto (Uruguay)
+                let defaultLat = -34.61358;
+                let defaultLng = -56.21738;
+
+                // Si hay apiarios, que marque el primero como el centro
+                if (apiarios.length > 0 && apiarios[0].latitud && apiarios[0].longitud) {
+                    defaultLat = parseFloat(apiarios[0].latitud);
+                    defaultLng = parseFloat(apiarios[0].longitud);
+                }
+
+                // Inicializamos el mapa
+                const map = L.map('map').setView([defaultLat, defaultLng], 10);
+
                 // Agregar tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; OpenStreetMap contributors',
                     maxZoom: 19
                 }).addTo(map);
-                
-                // Agregar marcador
-                L.marker([-34.61358, -56.21738])
-                    .addTo(map)
-                    .bindPopup('Centro Regional Sur')
-                    .openPopup();
+
+                // Función para obtener la clase CSS del popup según el estado
+                function getPopupClassName(hayColmenaEnPeligro) {
+                    return hayColmenaEnPeligro ? 'popup-danger' : 'popup-safe';
+                }
+
+                // Función para generar el contenido del popup
+                function getPopupContent(apiario) {
+                    const estadoTexto = apiario.hayColmenaEnPeligro 
+                        ? '⚠️ Colmena en peligro' 
+                        : '✅ Sin alertas';
                     
+                    return `
+                        <strong>${apiario.nombre}</strong><br/>
+                        ${apiario.ubicacion || 'Sin ubicación de referencia'}<br/>
+                        <em>${estadoTexto}</em><br/>
+                        <a href="/DetalleApiario?id=${apiario.id}">Ver detalles</a>
+                    `;
+                }
+                
+                // Agregar marcadores para todos los apiarios del usuario
+                const markers = [];
+                apiarios.forEach(function(apiario) {
+                    if (apiario.latitud && apiario.longitud) {
+                        const lat = parseFloat(apiario.latitud);
+                        const lng = parseFloat(apiario.longitud);
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            const marker = L.marker([lat, lng])
+                                .addTo(map)
+                                .bindPopup(getPopupContent(apiario), {
+                                    className: getPopupClassName(apiario.hayColmenaEnPeligro)
+                                });
+                            markers.push(marker);
+                        }
+                    }
+                });
+               
+                // Se ajusta el tamaño del mapa para mostrar todos los marcadores
+                if (markers.length > 1) {
+                    const group = L.featureGroup(markers);
+                    map.fitBounds(group.getBounds().pad(0.1));
+                }
+
+                // Muestra mensaje si no hay apiarios
+                if (apiarios.length === 0) {
+                    L.popup()
+                        .setLatLng([defaultLat, defaultLng])
+                        .setContent('No hay apiarios registrados. Agrega uno para comenzar.')
+                        .openOn(map);
+                }
             } catch (error) {
                 console.error('Error al inicializar el mapa:', error);
             }

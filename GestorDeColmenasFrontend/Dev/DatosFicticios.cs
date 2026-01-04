@@ -12,19 +12,15 @@ namespace GestorDeColmenasFrontend.Dev
     /// </summary>
     public static class DatosFicticios
     {
+        // ID de usuario ficticio para desarrollo
+        public const int UsuarioIdFicticio = 1;
+
         public static UsuarioSimpleDto GetUsuario() => new()
         {
+            Id = UsuarioIdFicticio,
             Nombre = "Juan Pérez",
             Email = "juan.perez@example.com",
             FotoPerfil = "https://i.pravatar.cc/150?img=67"
-        };
-
-        public static List<ApiarioListItemDto> GetApiarios() => new()
-        {
-            new() { Id = 1, Nombre = "Apiario del Bosque", UbicacionDeReferencia = "Lat: 40.4168, Lon: -3.7038", CantidadColmenas = 12 },
-            new() { Id = 2, Nombre = "Apiario del Valle", UbicacionDeReferencia = "Lat: 41.3851, Lon: 2.1734", CantidadColmenas = 8 },
-            new() { Id = 3, Nombre = "Apiario La Montaña", UbicacionDeReferencia = "Lat: 39.4699, Lon: -0.3763", CantidadColmenas = 20 },
-            new() { Id = 4, Nombre = "Apiario de la Pradera", UbicacionDeReferencia = "Lat: 43.3623, Lon: -5.8494", CantidadColmenas = 15 },
         };
 
         public static List<ColmenaListItemDto> GetColmenas() => new()
@@ -106,7 +102,9 @@ namespace GestorDeColmenasFrontend.Dev
             Estado = EstadoColmena.OPTIMO,
             CantidadCuadros = 3,
             CantidadRegistros = 1234,
-            TempInternaPromedio = 34.5f,
+            TempInterna1 = 34.5f,
+            TempInterna2 = 34.5f,
+            TempInterna3 = 34.5f,
             TempExterna = 28.2f,
             Peso = 45.2f
         };

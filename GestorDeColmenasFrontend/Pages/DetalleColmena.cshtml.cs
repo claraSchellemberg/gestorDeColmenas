@@ -3,6 +3,7 @@ using GestorDeColmenasFrontend.Dtos;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Mediciones;
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,11 @@ namespace GestorDeColmenasFrontend.Pages
 {
     public class DetalleColmenaModel : PageModel
     {
+        private readonly IColmenaService _colmenaService;
+        public DetalleColmenaModel(IColmenaService colmenaService)
+        {
+            _colmenaService = colmenaService;
+        }
         public ColmenaDetalleDto? Colmena { get; set; }
         public List<RegistroMedicionDto> HistorialMediciones { get; set; } = new();
         public UsuarioSimpleDto? Usuario { get; set; }
@@ -23,7 +29,7 @@ namespace GestorDeColmenasFrontend.Pages
         {
             // TODO: Reemplazar con llamadas a servicios cuando el backend esté listo
             Usuario = DatosFicticios.GetUsuario();
-            Colmena = DatosFicticios.GetColmenaDetalle(id);
+            Colmena = _colmenaService.GetColmenaDetalleAsync(id).Result;
             HistorialMediciones = DatosFicticios.GetHistorialMediciones();
             TotalRegistros = Colmena?.CantidadRegistros ?? 0;
         }

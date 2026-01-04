@@ -12,13 +12,33 @@ namespace GestorDeColmenasFrontend.Servicios
         {
             _http = http;
         }
-        public Task<ColmenaDetalleDto?> GetColmenaDetalleAsync(int id)
+        public async Task<ColmenaDetalleDto?> GetColmenaDetalleAsync(int id)
         {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+            var resp = await _http.GetAsync($"Colmenas/{id}/detalle");
+            if (resp.IsSuccessStatusCode)
+            {
+                var colmena = await resp.Content.ReadFromJsonAsync<ColmenaDetalleDto>();
+                return colmena;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Error obteniendo colmena: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+            }
+
         }
-        public Task<List<ColmenaListItemDto>> GetColmenasAsync()
+        public async Task<List<ColmenaListItemDto>> GetColmenasAsync()
         {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+            var resp = await _http.GetAsync("Colmenas");
+
+            if (resp.IsSuccessStatusCode)
+            {
+                var colmenas = await resp.Content.ReadFromJsonAsync<List<ColmenaListItemDto>>();
+                return colmenas ?? new List<ColmenaListItemDto>();
+            }
+            else
+            {
+                throw new InvalidOperationException($"Error obteniendo apiarios: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+            }
         }
         public Task<List<RegistroMedicionDto>> GetHistorialMedicionesAsync(int colmenaId, int pagina = 1, int registrosPorPagina = 10)
         {
@@ -26,7 +46,7 @@ namespace GestorDeColmenasFrontend.Servicios
         }
         public async Task<ColmenaModel> RegistrarAsync(int apiarioId, ColmenaCreateDto dto)
         {
-            var respuesta = await _http.PostAsJsonAsync($"api/apiarios/{apiarioId}/colmenas", dto);
+            var respuesta = await _http.PostAsJsonAsync($"/Colmenas", dto);
             if (!respuesta.IsSuccessStatusCode)
             {
                 var msj = await respuesta.Content.ReadAsStringAsync();
