@@ -129,15 +129,15 @@
                     <p class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark">@(Model.ViewModel?.Metricas?.Colmenas ?? 0)</p>
                 </a>
 
-                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                <a href="/ListadoColmenas?estado=OPTIMO" class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Colmenas en Buen Estado</p>
                     <p class="text-3xl font-bold tracking-tight text-accent-green">@(Model.ViewModel?.Metricas?.BuenEstado ?? 0)</p>
-                </div>
+                </a>
 
-                <div class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
+                <a href="/ListadoColmenas?estado=ALERTA" class="flex flex-col gap-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-6 shadow-sm">
                     <p class="text-base font-medium text-text-light dark:text-text-dark">Alertas Pendientes</p>
                     <p class="text-3xl font-bold tracking-tight text-accent-orange">@(Model.ViewModel?.Metricas?.Alertas ?? 0)</p>
-                </div>
+                </a>
             </div>
 
             <!-- Mapa (estructura/designer identical) -->

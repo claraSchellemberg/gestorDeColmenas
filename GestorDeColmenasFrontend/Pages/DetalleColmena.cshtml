@@ -307,16 +307,16 @@
                                     var (cardBg, cardText, cardDot) = GetStatusColors(registro.Estado);
                                     var statusIcon = registro.Estado switch
                                     {
-                                        EstadoColmena.OPTIMO => "check_circle",
-                                        EstadoColmena.NECESITA_REVISION => "error",
-                                        EstadoColmena.EN_PELIGRO => "warning",
+                                        CondicionColmena.OPTIMO => "check_circle",
+                                        CondicionColmena.NECESITA_REVISION => "error",
+                                        CondicionColmena.EN_PELIGRO => "warning",
                                         _ => "help"
                                     };
                                     var statusColor = registro.Estado switch
                                     {
-                                        EstadoColmena.OPTIMO => "text-accent-green",
-                                        EstadoColmena.NECESITA_REVISION => "text-accent-orange",
-                                        EstadoColmena.EN_PELIGRO => "text-accent-red",
+                                        CondicionColmena.OPTIMO => "text-accent-green",
+                                        CondicionColmena.NECESITA_REVISION => "text-accent-orange",
+                                        CondicionColmena.EN_PELIGRO => "text-accent-red",
                                         _ => "text-gray-400"
                                     };
                                     <div class="bg-card-light dark:bg-card-dark rounded-xl p-4 shadow-sm border border-border-light dark:border-border-dark">
@@ -467,13 +467,13 @@
 </html>
 
 @functions {
-    (string bgColor, string textColor, string dotColor) GetStatusColors(EstadoColmena? estado)
+    (string bgColor, string textColor, string dotColor) GetStatusColors(CondicionColmena? estado)
     {
         return estado switch
         {
-            EstadoColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
-            EstadoColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
-            EstadoColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
+            CondicionColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
+            CondicionColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
+            CondicionColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
             _ => ("bg-gray-200 dark:bg-gray-600", "text-gray-800 dark:text-gray-300", "bg-gray-500")
         };
     }

@@ -1,6 +1,6 @@
 ﻿namespace GestorDeColmenasFrontend.Modelos
 {
-    public enum EstadoColmena
+    public enum CondicionColmena
     {
         OPTIMO,
         NECESITA_REVISION,

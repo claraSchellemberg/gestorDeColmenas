@@ -10,7 +10,7 @@ namespace GestorDeColmenasFrontend.Dtos.Colmena
         public string? ApiarioNombre { get; set; }
         public string? Descripcion { get; set; }
         public DateTime FechaInstalacionSensores { get; set; }
-        public EstadoColmena? Estado { get; set; }
+        public CondicionColmena? Estado { get; set; }
         public int CantidadCuadros { get; set; }
         public int CantidadRegistros { get; set; }
 

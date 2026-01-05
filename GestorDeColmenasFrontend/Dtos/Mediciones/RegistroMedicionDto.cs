@@ -12,7 +12,7 @@ namespace GestorDeColmenasFrontend.Dtos.Mediciones
         public float TempInterna3 { get; set; }
         public float TempExterna { get; set; }
         public float Peso { get; set; }
-        public EstadoColmena? Estado { get; set; }
+        public CondicionColmena? Estado { get; set; }
         public string? MensajeEstado { get; set; }
         public string EstadoTexto => Estado.ToDisplayText();
     }
