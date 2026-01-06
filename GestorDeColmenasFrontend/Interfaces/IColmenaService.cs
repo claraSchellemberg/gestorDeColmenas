@@ -10,5 +10,6 @@ namespace GestorDeColmenasFrontend.Interfaces
         Task<List<ColmenaListItemDto>> GetColmenasAsync();
         Task<ColmenaDetalleDto?> GetColmenaDetalleAsync(int id);
         Task<List<RegistroMedicionDto>> GetHistorialMedicionesAsync(int colmenaId, int pagina = 1, int registrosPorPagina = 10);
+        Task<List<ColmenaModel>> GetColmenasPorApiarioAsync(int apiarioId);
     }
 }

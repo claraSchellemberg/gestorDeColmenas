@@ -14,7 +14,6 @@ namespace GestorDeColmenasFrontend.Pages
 
         [BindProperty]
         public string? ConfirmarContrasena { get; set; }
-
         public void OnGet()
         {
             // Cargar datos del usuario (datos ficticios por ahora)
@@ -28,7 +27,6 @@ namespace GestorDeColmenasFrontend.Pages
                 FotoPerfil = "https://i.pravatar.cc/150?img=67"
             };
         }
-
         public IActionResult OnPostGuardarPerfil()
         {
             if (!ModelState.IsValid)

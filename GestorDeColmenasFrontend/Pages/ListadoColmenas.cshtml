@@ -47,9 +47,36 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        @@keyframes slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
     </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <!-- Toast Notifications (positioned fixed, so location in DOM doesn't matter much, but cleaner at top) -->
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <div id="toastSuccess" class="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-accent-green text-white px-4 py-3 rounded-lg shadow-lg animate-slide-in">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>@TempData["ToastSuccess"]</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-80">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    }
+    @if (TempData["ToastError"] != null)
+    {
+        <div id="toastError" class="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-accent-red text-white px-4 py-3 rounded-lg shadow-lg max-w-md animate-slide-in">
+            <span class="material-symbols-outlined">error</span>
+            <span>@TempData["ToastError"]</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-80">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    }
+
     <div class="flex h-screen w-full flex-col lg:flex-row">
 
         <!-- ========== SIDEBAR ESCRITORIO (lg+) ========== -->
@@ -134,11 +161,40 @@
             <main class="flex-1 overflow-y-auto p-4 md:p-8">
                 <div class="mx-auto max-w-7xl">
 
+                    <!-- ✅ FIX: Error banner moved INSIDE main content area -->
+                    @if (Model.ErroresCarga.Any())
+                    {
+                        <div class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-accent-red rounded-lg">
+                            <div class="flex items-center gap-2 text-accent-red dark:text-red-300 font-medium">
+                                <span class="material-symbols-outlined">warning</span>
+                                Algunos datos no pudieron cargarse:
+                            </div>
+                            <ul class="mt-2 text-sm text-accent-red dark:text-red-300 list-disc list-inside">
+                                @foreach (var error in Model.ErroresCarga)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
                     <!-- Título y tabs -->
                     <div class="mb-6">
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div>
                                 <h2 class="hidden md:block text-3xl lg:text-4xl font-black tracking-tight">Colmenas</h2>
+                                @if (!string.IsNullOrEmpty(Model.ApiarioNombreFiltro))
+                                {
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-sm text-text-muted">Filtrado por apiario:</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-text-light dark:text-text-dark">
+                                            @Model.ApiarioNombreFiltro
+                                            <a asp-page="/ListadoColmenas" class="ml-2 hover:text-accent-red" title="Quitar filtro">
+                                                <span class="material-symbols-outlined text-sm">close</span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                }
                                 <p class="hidden md:block text-text-muted mt-1">Listado de colmenas con mediciones de cuadros y sensores externos.</p>
                             </div>
                             <button id="btnAgregarColmena" class="hidden md:inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-accent-honey">
@@ -176,7 +232,7 @@
                                                     @colmena.EstadoTexto
                                                 </span>
                                             </div>
-                                            <a href="#" class="text-gray-400 hover:text-primary">
+                                            <a href="/DetalleColmena/@colmena.Id" class="text-gray-400 hover:text-primary">
                                                 <span class="material-symbols-outlined">more_vert</span>
                                             </a>
                                         </div>
@@ -254,7 +310,7 @@
                                             var (bgColor, textColor, dotColor) = GetStatusColors(colmena.Estado);
                                             <tr class="@rowBg border-b dark:border-border-dark hover:bg-gray-100 dark:hover:bg-slate-700/50">
                                                 <th class="px-6 py-4 font-semibold text-text-light dark:text-text-dark whitespace-nowrap" scope="row">
-                                                    <a class="hover:text-primary hover:underline" href="#">@colmena.Nombre</a>
+                                                    <a class="hover:text-primary hover:underline" href="/DetalleColmena/@colmena.Id">@colmena.Nombre</a>
                                                     @if (colmena.MedicionesCuadros.Any())
                                                     {
                                                         <span class="text-xs text-text-muted block">@colmena.MedicionesCuadros.Count cuadro(s)</span>
@@ -330,31 +386,56 @@
     </div>
 
     <!-- Modal Agregar Colmena -->
-    <div id="modalColmena" class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4">
+    <div id="modalColmena" class="@(Model.MostrarModal ? "" : "hidden") fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4 max-h-[90vh] overflow-y-auto">
             <h2 class="text-lg font-bold mb-4">Nueva Colmena</h2>
+            
+            <!-- Error summary -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-accent-red rounded-lg">
+                    <div class="flex items-center gap-2 text-accent-red dark:text-red-300">
+                        <span class="material-symbols-outlined text-lg">error</span>
+                        <span class="font-medium text-sm">Por favor corrija los errores:</span>
+                    </div>
+                    <ul class="mt-2 text-sm text-accent-red dark:text-red-300 list-disc list-inside">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+            
             <form method="post" asp-page-handler="AgregarColmena">
                 @Html.AntiForgeryToken()
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium mb-1">Nombre / ID</label>
-                        <input asp-for="NuevaColmena.Nombre" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Ej: C-051" />
+                        <input asp-for="NuevaColmena.Nombre" 
+                               class="w-full border @(ViewData.ModelState["NuevaColmena.Nombre"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                               placeholder="Ej: C-051" />
+                        <span asp-validation-for="NuevaColmena.Nombre" class="text-xs text-accent-red"></span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Apiario</label>
-                        <select asp-for="NuevaColmena.ApiarioId" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary">
+                        <select asp-for="NuevaColmena.ApiarioId" 
+                                asp-items="@(new SelectList(Model.Apiarios, "Id", "Nombre"))"
+                                class="w-full border @(ViewData.ModelState["NuevaColmena.ApiarioId"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary">
                             <option value="">Seleccionar apiario...</option>
-                            <option value="1">El Robledal</option>
-                            <option value="2">Los Girasoles</option>
                         </select>
+                        <span asp-validation-for="NuevaColmena.ApiarioId" class="text-xs text-accent-red"></span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Cantidad de Cuadros</label>
-                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" max="20" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
+                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" max="20" 
+                               class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Descripción</label>
-                        <textarea asp-for="NuevaColmena.Descripcion" rows="2" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Descripción opcional..."></textarea>
+                        <textarea asp-for="NuevaColmena.Descripcion" rows="2" 
+                                  class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                                  placeholder="Descripción opcional..."></textarea>
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 mt-6">
@@ -383,18 +464,36 @@
         document.getElementById("btnAgregarColmena")?.addEventListener("click", openModal);
         document.getElementById("btnAgregarColmenaMobile")?.addEventListener("click", openModal);
         document.getElementById("btnCerrarModal")?.addEventListener("click", closeModal);
+        
+        // Close modal on backdrop click
+        modal?.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+
+        // Auto-hide toasts after 10 seconds
+        setTimeout(() => {
+            document.getElementById('toastSuccess')?.remove();
+            document.getElementById('toastError')?.remove();
+        }, 10000);
     </script>
 </body>
 </html>
 
 @functions {
-    (string bgColor, string textColor, string dotColor) GetStatusColors(EstadoColmena? estado)
+    (string bgColor, string textColor, string dotColor) GetStatusColors(CondicionColmena? estado)
     {
         return estado switch
         {
-            EstadoColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
-            EstadoColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
-            EstadoColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
+            CondicionColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
+            CondicionColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
+            CondicionColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
             _ => ("bg-gray-200 dark:bg-gray-600", "text-gray-800 dark:text-gray-300", "bg-gray-500")
         };
     }

@@ -12,19 +12,15 @@ namespace GestorDeColmenasFrontend.Dev
     /// </summary>
     public static class DatosFicticios
     {
+        // ID de usuario ficticio para desarrollo
+        public const int UsuarioIdFicticio = 1;
+
         public static UsuarioSimpleDto GetUsuario() => new()
         {
+            Id = UsuarioIdFicticio,
             Nombre = "Juan Pérez",
             Email = "juan.perez@example.com",
             FotoPerfil = "https://i.pravatar.cc/150?img=67"
-        };
-
-        public static List<ApiarioListItemDto> GetApiarios() => new()
-        {
-            new() { Id = 1, Nombre = "Apiario del Bosque", UbicacionDeReferencia = "Lat: 40.4168, Lon: -3.7038", CantidadColmenas = 12 },
-            new() { Id = 2, Nombre = "Apiario del Valle", UbicacionDeReferencia = "Lat: 41.3851, Lon: 2.1734", CantidadColmenas = 8 },
-            new() { Id = 3, Nombre = "Apiario La Montaña", UbicacionDeReferencia = "Lat: 39.4699, Lon: -0.3763", CantidadColmenas = 20 },
-            new() { Id = 4, Nombre = "Apiario de la Pradera", UbicacionDeReferencia = "Lat: 43.3623, Lon: -5.8494", CantidadColmenas = 15 },
         };
 
         public static List<ColmenaListItemDto> GetColmenas() => new()
@@ -38,7 +34,7 @@ namespace GestorDeColmenasFrontend.Dev
                     new() { CuadroNombre = "Cuadro 2", TempInterna1 = 34.2f, TempInterna2 = 34.9f, TempInterna3 = 34.6f }
                 },
                 TempExterna = 28.2f, Peso = 45.2f,
-                Estado = EstadoColmena.OPTIMO,
+                Estado = CondicionColmena.OPTIMO,
                 FechaUltimaMedicion = DateTime.Now.AddHours(-1)
             },
             new()
@@ -49,7 +45,7 @@ namespace GestorDeColmenasFrontend.Dev
                     new() { CuadroNombre = "Cuadro 1", TempInterna1 = 35.5f, TempInterna2 = 36.2f, TempInterna3 = 35.8f }
                 },
                 TempExterna = 30.1f, Peso = 44.1f,
-                Estado = EstadoColmena.NECESITA_REVISION,
+                Estado = CondicionColmena.NECESITA_REVISION,
                 FechaUltimaMedicion = DateTime.Now.AddHours(-2)
             },
             new()
@@ -61,7 +57,7 @@ namespace GestorDeColmenasFrontend.Dev
                     new() { CuadroNombre = "Cuadro 2", TempInterna1 = 36.0f, TempInterna2 = 36.8f, TempInterna3 = 36.3f }
                 },
                 TempExterna = 31.0f, Peso = 43.9f,
-                Estado = EstadoColmena.EN_PELIGRO,
+                Estado = CondicionColmena.EN_PELIGRO,
                 FechaUltimaMedicion = DateTime.Now.AddMinutes(-30)
             },
             new()
@@ -72,7 +68,7 @@ namespace GestorDeColmenasFrontend.Dev
                     new() { CuadroNombre = "Cuadro 1", TempInterna1 = 34.0f, TempInterna2 = 34.7f, TempInterna3 = 34.3f }
                 },
                 TempExterna = 27.1f, Peso = 52.3f,
-                Estado = EstadoColmena.OPTIMO,
+                Estado = CondicionColmena.OPTIMO,
                 FechaUltimaMedicion = DateTime.Now.AddHours(-1)
             },
             new()
@@ -83,7 +79,7 @@ namespace GestorDeColmenasFrontend.Dev
                     new() { CuadroNombre = "Cuadro 1", TempInterna1 = 33.9f, TempInterna2 = 34.6f, TempInterna3 = 34.2f }
                 },
                 TempExterna = 26.8f, Peso = 48.1f,
-                Estado = EstadoColmena.OPTIMO,
+                Estado = CondicionColmena.OPTIMO,
                 FechaUltimaMedicion = DateTime.Now.AddHours(-3)
             },
             new()
@@ -103,10 +99,12 @@ namespace GestorDeColmenasFrontend.Dev
             ApiarioNombre = "El Robledal",
             Descripcion = "Colmena fuerte, 2 alzas. Reina marcada verde (2024).",
             FechaInstalacionSensores = new DateTime(2024, 3, 10),
-            Estado = EstadoColmena.OPTIMO,
+            Estado = CondicionColmena.OPTIMO,
             CantidadCuadros = 3,
             CantidadRegistros = 1234,
-            TempInternaPromedio = 34.5f,
+            TempInterna1 = 34.5f,
+            TempInterna2 = 34.5f,
+            TempInterna3 = 34.5f,
             TempExterna = 28.2f,
             Peso = 45.2f
         };
@@ -119,9 +117,9 @@ namespace GestorDeColmenasFrontend.Dev
 
             var estados = new[]
             {
-                (EstadoColmena.OPTIMO, "Saludable"),
-                (EstadoColmena.NECESITA_REVISION, "Alerta: Cría enfriándose"),
-                (EstadoColmena.EN_PELIGRO, "Peligro: Sobrecalentamiento")
+                (CondicionColmena.OPTIMO, "Saludable"),
+                (CondicionColmena.NECESITA_REVISION, "Alerta: Cría enfriándose"),
+                (CondicionColmena.EN_PELIGRO, "Peligro: Sobrecalentamiento")
             };
 
             for (int i = 0; i < 10; i++)

@@ -8,7 +8,7 @@ namespace GestorDeColmenasFrontend.Modelos
         public string Nombre { get; set; } = string.Empty;
         public DateTime FechaInstalacionSensores { get; set; }
         public string? Descripcion { get; set; }
-        public EstadoColmena Estado { get; set; }
+        public CondicionColmena Estado { get; set; }
         
         // Relaciones
         public ApiarioModel? Apiario { get; set; }

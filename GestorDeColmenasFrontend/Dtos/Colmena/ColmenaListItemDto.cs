@@ -9,10 +9,11 @@ namespace GestorDeColmenasFrontend.Dtos.Colmena
         public int Id { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string? ApiarioNombre { get; set; }
+        public int ApiarioId { get; set; }
         public float TempExterna { get; set; }
         public float Peso { get; set; }
         public List<MedicionCuadroDto> MedicionesCuadros { get; set; } = new();
-        public EstadoColmena? Estado { get; set; }
+        public CondicionColmena? Estado { get; set; }
         public DateTime? FechaUltimaMedicion { get; set; }
 
         // Promedio de temperatura interna 1 de todos los cuadros
