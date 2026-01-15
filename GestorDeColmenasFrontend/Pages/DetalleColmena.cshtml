@@ -1,0 +1,480 @@
+﻿@page "{id:int}"
+@using GestorDeColmenasFrontend.Modelos
+@model GestorDeColmenasFrontend.Pages.DetalleColmenaModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.Colmena?.Nombre - Detalle de Colmena</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFC107",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#1e293b",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#334155",
+                        "text-light": "#343A40",
+                        "text-dark": "#e2e8f0",
+                        "text-muted": "#6B7280",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#475569",
+                        "accent-honey": "#E69B00",
+                        "accent-green": "#4CAF50",
+                        "accent-blue": "#2196F3",
+                        "accent-red": "#F44336",
+                        "accent-orange": "#FF9800",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+                }
+            }
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+
+    <!-- ========== MENÚ HAMBURGUESA MÓVIL ========== -->
+    <div id="menuMobile" class="fixed inset-0 z-50 hidden">
+        <!-- Overlay -->
+        <div id="menuOverlay" class="absolute inset-0 bg-black/50"></div>
+        <!-- Panel del menú -->
+        <div id="menuPanel" class="absolute left-0 top-0 h-full w-72 bg-card-light dark:bg-card-dark shadow-xl transform -translate-x-full transition-transform duration-300">
+            <div class="p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
+                             alt="Avatar"
+                             class="h-10 w-10 rounded-full object-cover" />
+                        <div>
+                            <p class="font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</p>
+                            <p class="text-sm text-text-muted">@(Model.Usuario?.Email ?? "")</p>
+                        </div>
+                    </div>
+                    <button id="btnCerrarMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <nav class="p-4 space-y-2">
+                <a href="/PerfilUsuario" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>Mi Perfil</span>
+                </a>
+                <a href="/Dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/ListadoApiarios" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
+                    <span class="material-symbols-outlined">hive</span>
+                    <span>Apiarios</span>
+                </a>
+                <a href="/ListadoColmenas" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span>Colmenas</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
+                    <span class="material-symbols-outlined">description</span>
+                    <span>Registros</span>
+                </a>
+            </nav>
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-border-light dark:border-border-dark">
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex h-screen w-full flex-col lg:flex-row">
+
+        <!-- ========== SIDEBAR ESCRITORIO (lg+) ========== -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4 flex-shrink-0">
+            <div class="flex items-center gap-3 px-2 mb-6">
+                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
+                     alt="Avatar"
+                     class="h-10 w-10 rounded-full object-cover" />
+                <div class="flex flex-col">
+                    <span class="text-base font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</span>
+                    <span class="text-text-muted text-sm">@(Model.Usuario?.Email ?? "")</span>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/PerfilUsuario">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="text-sm font-medium">Mi Perfil</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/Dashboard">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/ListadoApiarios">
+                    <span class="material-symbols-outlined">hive</span>
+                    <span class="text-sm font-medium">Apiarios</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/ListadoColmenas">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="text-sm">Colmenas</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="text-sm font-medium">Registros</span>
+                </a>
+            </nav>
+
+            <div class="mt-auto">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="text-sm font-medium">Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ========== CONTENIDO PRINCIPAL ========== -->
+        <div class="flex-1 flex flex-col min-h-screen lg:min-h-0 overflow-hidden">
+
+            <!-- Header móvil con menú hamburguesa -->
+            <header class="md:hidden flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+                <button id="btnAbrirMenu" class="p-2 -ml-2">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1 class="text-lg font-bold">@Model.Colmena?.Nombre</h1>
+                <a href="/ListadoColmenas" class="p-2 -mr-2">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </header>
+
+            <!-- Header tablet -->
+            <header class="hidden md:flex lg:hidden items-center justify-between border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-6 py-3 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <a href="/ListadoColmenas" class="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </a>
+                    <div>
+                        <p class="text-sm text-text-muted">@Model.Colmena?.ApiarioNombre</p>
+                        <h1 class="text-lg font-bold">@Model.Colmena?.Nombre</h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    @{
+                        var (headerBg, headerText, headerDot) = GetStatusColors(Model.Colmena?.Estado);
+                    }
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium @headerBg @headerText">
+                        <span class="w-2 h-2 mr-2 @headerDot rounded-full"></span>
+                        @Model.Colmena?.EstadoTexto
+                    </span>
+                </div>
+            </header>
+
+            <!-- Contenido scrolleable -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+                <div class="mx-auto max-w-7xl">
+
+                    <!-- ========== HEADER ESCRITORIO ========== -->
+                    <header class="hidden lg:block mb-8">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center gap-2 text-text-muted">
+                                    <a href="/ListadoApiarios" class="hover:text-primary">Apiarios</a>
+                                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                    <a href="/ListadoColmenas" class="hover:text-primary">@Model.Colmena?.ApiarioNombre</a>
+                                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                    <span>@Model.Colmena?.Nombre</span>
+                                </div>
+                                <h1 class="text-4xl font-black tracking-tight">@Model.Colmena?.Nombre</h1>
+                            </div>
+                            @{
+                                var (bgColor, textColor, dotColor) = GetStatusColors(Model.Colmena?.Estado);
+                            }
+                            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium @bgColor @textColor">
+                                <span class="w-2 h-2 mr-2 @dotColor rounded-full"></span>
+                                @Model.Colmena?.EstadoTexto
+                            </span>
+                        </div>
+                    </header>
+
+                    <!-- ========== TABS MÓVIL/TABLET ========== -->
+                    <div class="md:hidden mb-4">
+                        @{
+                            var (mobBg, mobText, mobDot) = GetStatusColors(Model.Colmena?.Estado);
+                        }
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-sm text-text-muted">@Model.Colmena?.ApiarioNombre</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium @mobBg @mobText">
+                                <span class="w-2 h-2 mr-1.5 @mobDot rounded-full"></span>
+                                @Model.Colmena?.EstadoTexto
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Tabs de navegación (tablet) -->
+                    <div class="hidden md:block lg:hidden border-b border-border-light dark:border-border-dark mb-6">
+                        <nav class="-mb-px flex space-x-6">
+                            <a class="border-transparent hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500" href="#">Resumen</a>
+                            <a class="border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm" href="#">Registros</a>
+                            <a class="border-transparent hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500" href="#">Configuración</a>
+                        </nav>
+                    </div>
+
+                    <!-- ========== LAYOUT PRINCIPAL ========== -->
+                    <div class="grid grid-cols-12 gap-6 lg:gap-8">
+
+                        <!-- Sidebar de información (escritorio) -->
+                        <aside class="hidden lg:block col-span-3 space-y-6">
+                            <!-- Info clave -->
+                            <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-6">
+                                <h2 class="text-lg font-bold mb-4">Información Clave</h2>
+                                <div class="space-y-4 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-text-muted">Fecha instalación sensores</span>
+                                        <span class="font-medium">@Model.Colmena?.FechaInstalacionSensores.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-muted">Cantidad de cuadros</span>
+                                        <span class="font-medium">@Model.Colmena?.CantidadCuadros</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-muted">Total registros</span>
+                                        <span class="font-medium">@Model.Colmena?.CantidadRegistros.ToString("N0")</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.Colmena?.Descripcion))
+                                    {
+                                        <div class="pt-2 border-t border-border-light dark:border-border-dark">
+                                            <span class="text-text-muted block mb-1">Descripción</span>
+                                            <p class="font-medium">@Model.Colmena?.Descripcion</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Métricas actuales -->
+                            <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-6">
+                                <h2 class="text-lg font-bold mb-4">Métricas Actuales</h2>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="flex flex-col gap-1 rounded-lg p-4 bg-background-light dark:bg-background-dark">
+                                        <p class="text-text-muted text-sm">Temp. Internas</p>
+                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna1.ToString("F1")°C</p>
+                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna2.ToString("F1")°C</p>
+                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna3.ToString("F1")°C</p>
+                                    </div>
+                                    <div class="flex flex-col gap-1 rounded-lg p-4 bg-background-light dark:bg-background-dark">
+                                        <p class="text-text-muted text-sm">Peso</p>
+                                        <p class="text-2xl font-bold">@Model.Colmena?.Peso.ToString("F1") kg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Contenido principal (tabla de registros) -->
+                        <div class="col-span-12 lg:col-span-9">
+
+                            <!-- Tabs escritorio -->
+                            <div class="hidden lg:flex border-b border-border-light dark:border-border-dark gap-8 mb-6">
+                                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted hover:text-text-light pb-3 pt-2" href="#">
+                                    <span class="text-sm font-bold">Historial</span>
+                                </a>
+                                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary pb-3 pt-2" href="#">
+                                    <span class="text-primary text-sm font-bold">Registros</span>
+                                </a>
+                            </div>
+
+                            <!-- ========== VISTA MÓVIL: CARDS ========== -->
+                            <div class="md:hidden space-y-4">
+                                <h2 class="text-lg font-bold">Historial de Registros</h2>
+                                @foreach (var registro in Model.HistorialMediciones)
+                                {
+                                    var (cardBg, cardText, cardDot) = GetStatusColors(registro.Estado);
+                                    var statusIcon = registro.Estado switch
+                                    {
+                                        CondicionColmena.OPTIMO => "check_circle",
+                                        CondicionColmena.NECESITA_REVISION => "error",
+                                        CondicionColmena.EN_PELIGRO => "warning",
+                                        _ => "help"
+                                    };
+                                    var statusColor = registro.Estado switch
+                                    {
+                                        CondicionColmena.OPTIMO => "text-accent-green",
+                                        CondicionColmena.NECESITA_REVISION => "text-accent-orange",
+                                        CondicionColmena.EN_PELIGRO => "text-accent-red",
+                                        _ => "text-gray-400"
+                                    };
+                                    <div class="bg-card-light dark:bg-card-dark rounded-xl p-4 shadow-sm border border-border-light dark:border-border-dark">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <div>
+                                                <p class="font-bold">@registro.FechaMedicion.ToString("dd MMM yyyy, HH:mm")</p>
+                                                <p class="text-sm @statusColor font-medium">@registro.EstadoTexto</p>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="material-symbols-outlined @statusColor">@statusIcon</span>
+                                                <span class="font-bold text-lg">@registro.Peso.ToString("F1") kg</span>
+                                            </div>
+                                        </div>
+                                        <div class="border-t border-border-light dark:border-border-dark pt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                            <div class="flex items-center text-text-muted">
+                                                <span class="material-symbols-outlined text-base mr-1.5">thermostat</span>
+                                                <span>Ext: <span class="font-medium text-text-light dark:text-text-dark">@registro.TempExterna.ToString("F1")°C</span></span>
+                                            </div>
+                                            <div class="flex items-center text-text-muted">
+                                                <span class="material-symbols-outlined text-base mr-1.5">device_thermostat</span>
+                                                <span>Int 1: <span class="font-medium text-text-light dark:text-text-dark">@registro.TempInterna1.ToString("F1")°C</span></span>
+                                            </div>
+                                            <div class="flex items-center text-text-muted">
+                                                <span class="material-symbols-outlined text-base mr-1.5">device_thermostat</span>
+                                                <span>Int 2: <span class="font-medium text-text-light dark:text-text-dark">@registro.TempInterna2.ToString("F1")°C</span></span>
+                                            </div>
+                                            <div class="flex items-center text-text-muted">
+                                                <span class="material-symbols-outlined text-base mr-1.5">device_thermostat</span>
+                                                <span>Int 3: <span class="font-medium text-text-light dark:text-text-dark">@registro.TempInterna3.ToString("F1")°C</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- ========== VISTA TABLET/ESCRITORIO: TABLA ========== -->
+                            <div class="hidden md:block bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden">
+                                <div class="p-6 border-b border-border-light dark:border-border-dark">
+                                    <div class="flex flex-wrap gap-4 justify-between items-center">
+                                        <h3 class="text-lg font-bold">Registros de la Colmena</h3>
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">search</span>
+                                            <input class="w-64 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark py-2 pl-10 pr-4 text-sm focus:border-primary focus:ring-primary"
+                                                   placeholder="Buscar registros..."
+                                                   type="text" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm text-left">
+                                        <thead class="border-b border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800">
+                                            <tr>
+                                                <th class="px-6 py-3 font-medium text-text-muted" scope="col">Fecha</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 1</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 2</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 3</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Ext.</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Peso</th>
+                                                <th class="px-6 py-3 font-medium text-text-muted" scope="col">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                var rowIndex = 0;
+                                            }
+                                            @foreach (var registro in Model.HistorialMediciones)
+                                            {
+                                                var rowBg = rowIndex % 2 == 0 ? "" : "bg-background-light dark:bg-slate-800/50";
+                                                var (tableBg, tableText, tableDot) = GetStatusColors(registro.Estado);
+                                                <tr class="border-b border-border-light dark:border-border-dark @rowBg">
+                                                    <td class="px-6 py-4 whitespace-nowrap font-medium">@registro.FechaMedicion.ToString("dd/MM/yyyy HH:mm")</td>
+                                                    <td class="px-6 py-4 text-center">@registro.TempInterna1.ToString("F1")°C</td>
+                                                    <td class="px-6 py-4 text-center">@registro.TempInterna2.ToString("F1")°C</td>
+                                                    <td class="px-6 py-4 text-center">@registro.TempInterna3.ToString("F1")°C</td>
+                                                    <td class="px-6 py-4 text-center">@registro.TempExterna.ToString("F1")°C</td>
+                                                    <td class="px-6 py-4 text-center">@registro.Peso.ToString("F1") kg</td>
+                                                    <td class="px-6 py-4">
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @tableBg @tableText">
+                                                            <span class="w-2 h-2 mr-1.5 @tableDot rounded-full"></span>
+                                                            @registro.EstadoTexto
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                rowIndex++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Paginación -->
+                                <div class="p-4 border-t border-border-light dark:border-border-dark flex flex-wrap items-center justify-between gap-4">
+                                    <p class="text-sm text-text-muted">
+                                        Mostrando <span class="font-medium text-text-light dark:text-text-dark">1-10</span> de
+                                        <span class="font-medium text-text-light dark:text-text-dark">@Model.TotalRegistros.ToString("N0")</span> registros
+                                    </p>
+                                    <div class="flex items-center gap-2">
+                                        <button class="flex items-center justify-center h-8 w-8 rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-muted hover:bg-background-light dark:hover:bg-background-dark disabled:opacity-50" disabled>
+                                            <span class="material-symbols-outlined text-lg">chevron_left</span>
+                                        </button>
+                                        <button class="flex items-center justify-center h-8 w-8 rounded-md border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-muted hover:bg-background-light dark:hover:bg-background-dark">
+                                            <span class="material-symbols-outlined text-lg">chevron_right</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Menú hamburguesa móvil
+        const menuMobile = document.getElementById('menuMobile');
+        const menuPanel = document.getElementById('menuPanel');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+
+        function abrirMenu() {
+            menuMobile.classList.remove('hidden');
+            setTimeout(() => {
+                menuPanel.classList.remove('-translate-x-full');
+            }, 10);
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function cerrarMenu() {
+            menuPanel.classList.add('-translate-x-full');
+            setTimeout(() => {
+                menuMobile.classList.add('hidden');
+            }, 300);
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        btnAbrirMenu?.addEventListener('click', abrirMenu);
+        btnCerrarMenu?.addEventListener('click', cerrarMenu);
+        menuOverlay?.addEventListener('click', cerrarMenu);
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !menuMobile.classList.contains('hidden')) {
+                cerrarMenu();
+            }
+        });
+    </script>
+</body>
+</html>
+
+@functions {
+    (string bgColor, string textColor, string dotColor) GetStatusColors(CondicionColmena? estado)
+    {
+        return estado switch
+        {
+            CondicionColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
+            CondicionColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
+            CondicionColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
+            _ => ("bg-gray-200 dark:bg-gray-600", "text-gray-800 dark:text-gray-300", "bg-gray-500")
+        };
+    }
+}

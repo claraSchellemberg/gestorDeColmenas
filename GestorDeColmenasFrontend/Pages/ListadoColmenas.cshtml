@@ -1,0 +1,500 @@
+﻿@page
+@using GestorDeColmenasFrontend.Modelos
+@model GestorDeColmenasFrontend.Pages.ListadoColmenasModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colmenas - Gestión de Apiarios</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFC107",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#1e293b",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#334155",
+                        "text-light": "#343A40",
+                        "text-dark": "#e2e8f0",
+                        "text-muted": "#6B7280",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#475569",
+                        "accent-honey": "#E69B00",
+                        "accent-green": "#4CAF50",
+                        "accent-blue": "#2196F3",
+                        "accent-red": "#F44336",
+                        "accent-orange": "#FF9800",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
+                }
+            }
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @@keyframes slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <!-- Toast Notifications (positioned fixed, so location in DOM doesn't matter much, but cleaner at top) -->
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <div id="toastSuccess" class="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-accent-green text-white px-4 py-3 rounded-lg shadow-lg animate-slide-in">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>@TempData["ToastSuccess"]</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-80">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    }
+    @if (TempData["ToastError"] != null)
+    {
+        <div id="toastError" class="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-accent-red text-white px-4 py-3 rounded-lg shadow-lg max-w-md animate-slide-in">
+            <span class="material-symbols-outlined">error</span>
+            <span>@TempData["ToastError"]</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-80">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    }
+
+    <div class="flex h-screen w-full flex-col lg:flex-row">
+
+        <!-- ========== SIDEBAR ESCRITORIO (lg+) ========== -->
+        <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4">
+            <div class="flex items-center gap-3 px-2 mb-6">
+                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")" 
+                     alt="Avatar" 
+                     class="h-10 w-10 rounded-full object-cover" />
+                <div class="flex flex-col">
+                    <span class="text-base font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</span>
+                    <span class="text-text-muted text-sm">@(Model.Usuario?.Email ?? "email@ejemplo.com")</span>
+                </div>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/PerfilUsuario">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="text-sm font-medium">Mi Perfil</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/Dashboard">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/ListadoApiarios">
+                    <span class="material-symbols-outlined">hive</span>
+                    <span class="text-sm font-medium">Apiarios</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/ListadoColmenas">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="text-sm">Colmenas</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="text-sm font-medium">Registros</span>
+                </a>
+            </nav>
+
+            <div class="mt-auto">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="text-sm font-medium">Cerrar Sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ========== CONTENIDO PRINCIPAL ========== -->
+        <div class="flex-1 flex flex-col min-h-screen lg:min-h-0">
+
+            <!-- Header tablet -->
+            <header class="hidden md:flex lg:hidden items-center justify-between border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-6 py-3 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="text-primary size-8">
+                        <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.92,8.44l-8-4.57a2,2,0,0,0-1.84,0l-8,4.57a2,2,0,0,0-1,1.73V13.8a2,2,0,0,0,.13,2.44,1,1,0,0,0,.87.56H12a1,1,0,0,0,1-1V13.5a1,1,0,0,1,2,0V20a1,1,0,0,0,2,0V13.5a1,1,0,0,1,2,0v2.3a2,2,0,0,0,1,1.73l.2,0a2,2,0,0,0,1.72-1,2,2,0,0,0,.08-1V10.17A2,2,0,0,0,21.92,8.44ZM12,11.25a2.75,2.75,0,1,1,2.75-2.75A2.75,2.75,0,0,1,12,11.25Z"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-lg font-bold">Gestión de Apiarios</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <a href="/PerfilUsuario">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 hover:ring-2 hover:ring-primary transition-all"
+                             style="background-image: url('@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")');"></div>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Header móvil -->
+            <header class="md:hidden flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
+                <a href="/Dashboard" class="p-2 -ml-2">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-xl font-bold">Colmenas</h1>
+                <button id="btnAgregarColmenaMobile" class="p-2 -mr-2 text-primary">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+            </header>
+
+            <!-- Contenido -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-8">
+                <div class="mx-auto max-w-7xl">
+
+                    <!-- ✅ FIX: Error banner moved INSIDE main content area -->
+                    @if (Model.ErroresCarga.Any())
+                    {
+                        <div class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-accent-red rounded-lg">
+                            <div class="flex items-center gap-2 text-accent-red dark:text-red-300 font-medium">
+                                <span class="material-symbols-outlined">warning</span>
+                                Algunos datos no pudieron cargarse:
+                            </div>
+                            <ul class="mt-2 text-sm text-accent-red dark:text-red-300 list-disc list-inside">
+                                @foreach (var error in Model.ErroresCarga)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <!-- Título y tabs -->
+                    <div class="mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div>
+                                <h2 class="hidden md:block text-3xl lg:text-4xl font-black tracking-tight">Colmenas</h2>
+                                @if (!string.IsNullOrEmpty(Model.ApiarioNombreFiltro))
+                                {
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-sm text-text-muted">Filtrado por apiario:</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-text-light dark:text-text-dark">
+                                            @Model.ApiarioNombreFiltro
+                                            <a asp-page="/ListadoColmenas" class="ml-2 hover:text-accent-red" title="Quitar filtro">
+                                                <span class="material-symbols-outlined text-sm">close</span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                }
+                                <p class="hidden md:block text-text-muted mt-1">Listado de colmenas con mediciones de cuadros y sensores externos.</p>
+                            </div>
+                            <button id="btnAgregarColmena" class="hidden md:inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-accent-honey">
+                                <span class="material-symbols-outlined text-base">add</span>
+                                Agregar Colmena
+                            </button>
+                        </div>
+                        
+                        <!-- Tabs tablet -->
+                        <div class="hidden md:block lg:hidden mt-4 border-b border-border-light dark:border-border-dark">
+                            <nav class="-mb-px flex space-x-8">
+                                <a class="whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300" href="/PerfilUsuario">Perfil</a>
+                                <a class="whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300" href="/ListadoApiarios">Apiarios</a>
+                                <a class="whitespace-nowrap border-b-2 border-primary px-1 py-4 text-sm font-bold text-primary" href="/ListadoColmenas">Colmenas</a>
+                                <a class="whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300" href="#">Registros</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- ========== VISTA MÓVIL: CARDS ========== -->
+                    <div class="md:hidden space-y-4">
+                        @if (Model.Colmenas.Any())
+                        {
+                            @foreach (var colmena in Model.Colmenas)
+                            {
+                                var (bgColor, textColor, dotColor) = GetStatusColors(colmena.Estado);
+                                <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-md border border-border-light dark:border-border-dark overflow-hidden">
+                                    <div class="p-4">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h2 class="text-lg font-bold">Colmena @colmena.Nombre</h2>
+                                                <p class="text-text-muted text-xs">@colmena.ApiarioNombre</p>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @bgColor @textColor mt-1">
+                                                    <span class="w-2 h-2 mr-1.5 @dotColor rounded-full"></span>
+                                                    @colmena.EstadoTexto
+                                                </span>
+                                            </div>
+                                            <a href="/DetalleColmena/@colmena.Id" class="text-gray-400 hover:text-primary">
+                                                <span class="material-symbols-outlined">more_vert</span>
+                                            </a>
+                                        </div>
+                                        <div class="mt-4 border-t border-border-light dark:border-border-dark pt-4 space-y-3">
+                                            @if (colmena.MedicionesCuadros.Any())
+                                            {
+                                                <div class="flex items-center text-sm">
+                                                    <span class="material-symbols-outlined text-lg mr-2 text-gray-500">thermostat</span>
+                                                    <span class="font-medium">Temp. Int. (prom):</span>
+                                                    <span class="ml-auto">
+                                                        @colmena.PromedioTempInterna1?.ToString("F1")° / 
+                                                        @colmena.PromedioTempInterna2?.ToString("F1")° / 
+                                                        @colmena.PromedioTempInterna3?.ToString("F1")°C
+                                                    </span>
+                                                </div>
+                                                <div class="text-xs text-text-muted ml-7">
+                                                    @colmena.MedicionesCuadros.Count cuadro(s) con sensores
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="flex items-center text-sm text-text-muted">
+                                                    <span class="material-symbols-outlined text-lg mr-2">thermostat</span>
+                                                    Sin mediciones de cuadros
+                                                </div>
+                                            }
+                                            <div class="flex items-center text-sm">
+                                                <span class="material-symbols-outlined text-lg mr-2 text-gray-500">device_thermostat</span>
+                                                <span class="font-medium">Temp. Ext:</span>
+                                                <span class="ml-auto">@(colmena.TempExterna > 0 ? $"{colmena.TempExterna}°C" : "Sin datos")</span>
+                                            </div>
+                                            <div class="flex items-center text-sm">
+                                                <span class="material-symbols-outlined text-lg mr-2 text-gray-500">weight</span>
+                                                <span class="font-medium">Peso:</span>
+                                                <span class="ml-auto">@(colmena.Peso > 0 ? $"{colmena.Peso} kg" : "Sin datos")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-8 text-text-muted">
+                                <span class="material-symbols-outlined text-4xl mb-2">grid_view</span>
+                                <p>No hay colmenas registradas</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- ========== VISTA TABLET/ESCRITORIO: TABLA ========== -->
+                    <div class="hidden md:block bg-card-light dark:bg-card-dark rounded-lg shadow-sm border border-border-light dark:border-border-dark">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-700 dark:text-gray-300">
+                                    <tr>
+                                        <th class="px-6 py-3" scope="col">Colmena</th>
+                                        <th class="px-6 py-3" scope="col">Apiario</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Temp. Int. 1</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Temp. Int. 2</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Temp. Int. 3</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Temp. Ext.</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Peso</th>
+                                        <th class="px-6 py-3 text-center" scope="col">Estado</th>
+                                        <th class="px-6 py-3" scope="col"><span class="sr-only">Acciones</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Colmenas.Any())
+                                    {
+                                        var index = 0;
+                                        @foreach (var colmena in Model.Colmenas)
+                                        {
+                                            var rowBg = index % 2 == 0 ? "bg-card-light dark:bg-card-dark" : "bg-gray-50 dark:bg-slate-800";
+                                            var (bgColor, textColor, dotColor) = GetStatusColors(colmena.Estado);
+                                            <tr class="@rowBg border-b dark:border-border-dark hover:bg-gray-100 dark:hover:bg-slate-700/50">
+                                                <th class="px-6 py-4 font-semibold text-text-light dark:text-text-dark whitespace-nowrap" scope="row">
+                                                    <a class="hover:text-primary hover:underline" href="/DetalleColmena/@colmena.Id">@colmena.Nombre</a>
+                                                    @if (colmena.MedicionesCuadros.Any())
+                                                    {
+                                                        <span class="text-xs text-text-muted block">@colmena.MedicionesCuadros.Count cuadro(s)</span>
+                                                    }
+                                                </th>
+                                                <td class="px-6 py-4 text-text-muted">@colmena.ApiarioNombre</td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @(colmena.PromedioTempInterna1?.ToString("F1") ?? "-")°C
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @(colmena.PromedioTempInterna2?.ToString("F1") ?? "-")°C
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @(colmena.PromedioTempInterna3?.ToString("F1") ?? "-")°C
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @(colmena.TempExterna > 0 ? $"{colmena.TempExterna}°C" : "-")
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @(colmena.Peso > 0 ? $"{colmena.Peso} kg" : "-")
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @bgColor @textColor">
+                                                        <span class="w-2 h-2 mr-1.5 @dotColor rounded-full"></span>
+                                                        @colmena.EstadoTexto
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    <a class="font-medium text-primary hover:underline" href="/DetalleColmena/@colmena.Id">Ver</a>
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="9" class="px-6 py-8 text-center text-text-muted">
+                                                <span class="material-symbols-outlined text-4xl mb-2">grid_view</span>
+                                                <p>No hay colmenas registradas</p>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Navegación móvil -->
+            <nav class="md:hidden sticky bottom-0 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark shadow-lg">
+                <div class="flex justify-around p-2">
+                    <a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-muted hover:bg-gray-100" href="/PerfilUsuario">
+                        <span class="material-symbols-outlined">person</span>
+                        <span class="text-xs mt-1">Perfil</span>
+                    </a>
+                    <a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-muted hover:bg-gray-100" href="/Dashboard">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="text-xs mt-1">Dashboard</span>
+                    </a>
+                    <a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-muted hover:bg-gray-100" href="/ListadoApiarios">
+                        <span class="material-symbols-outlined">hive</span>
+                        <span class="text-xs mt-1">Apiarios</span>
+                    </a>
+                    <a class="flex flex-col items-center justify-center p-2 rounded-lg text-primary" href="/ListadoColmenas">
+                        <span class="material-symbols-outlined">grid_view</span>
+                        <span class="text-xs mt-1 font-bold">Colmenas</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal Agregar Colmena -->
+    <div id="modalColmena" class="@(Model.MostrarModal ? "" : "hidden") fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-lg font-bold mb-4">Nueva Colmena</h2>
+            
+            <!-- Error summary -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-accent-red rounded-lg">
+                    <div class="flex items-center gap-2 text-accent-red dark:text-red-300">
+                        <span class="material-symbols-outlined text-lg">error</span>
+                        <span class="font-medium text-sm">Por favor corrija los errores:</span>
+                    </div>
+                    <ul class="mt-2 text-sm text-accent-red dark:text-red-300 list-disc list-inside">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+            
+            <form method="post" asp-page-handler="AgregarColmena">
+                @Html.AntiForgeryToken()
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nombre / ID</label>
+                        <input asp-for="NuevaColmena.Nombre" 
+                               class="w-full border @(ViewData.ModelState["NuevaColmena.Nombre"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                               placeholder="Ej: C-051" />
+                        <span asp-validation-for="NuevaColmena.Nombre" class="text-xs text-accent-red"></span>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Apiario</label>
+                        <select asp-for="NuevaColmena.ApiarioId" 
+                                asp-items="@(new SelectList(Model.Apiarios, "Id", "Nombre"))"
+                                class="w-full border @(ViewData.ModelState["NuevaColmena.ApiarioId"]?.Errors.Any() == true ? "border-accent-red" : "border-border-light dark:border-border-dark") rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="">Seleccionar apiario...</option>
+                        </select>
+                        <span asp-validation-for="NuevaColmena.ApiarioId" class="text-xs text-accent-red"></span>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de Cuadros</label>
+                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" max="20" 
+                               class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Descripción</label>
+                        <textarea asp-for="NuevaColmena.Descripcion" rows="2" 
+                                  class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" 
+                                  placeholder="Descripción opcional..."></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="btnCerrarModal" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 font-medium hover:bg-gray-300 dark:hover:bg-gray-600">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-gray-900 font-bold hover:bg-accent-honey">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("modalColmena");
+        const openModal = () => {
+            modal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+        };
+        const closeModal = () => {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        };
+        
+        document.getElementById("btnAgregarColmena")?.addEventListener("click", openModal);
+        document.getElementById("btnAgregarColmenaMobile")?.addEventListener("click", openModal);
+        document.getElementById("btnCerrarModal")?.addEventListener("click", closeModal);
+        
+        // Close modal on backdrop click
+        modal?.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+
+        // Auto-hide toasts after 10 seconds
+        setTimeout(() => {
+            document.getElementById('toastSuccess')?.remove();
+            document.getElementById('toastError')?.remove();
+        }, 10000);
+    </script>
+</body>
+</html>
+
+@functions {
+    (string bgColor, string textColor, string dotColor) GetStatusColors(CondicionColmena? estado)
+    {
+        return estado switch
+        {
+            CondicionColmena.OPTIMO => ("bg-green-100 dark:bg-green-900/50", "text-accent-green dark:text-green-300", "bg-accent-green"),
+            CondicionColmena.NECESITA_REVISION => ("bg-orange-100 dark:bg-orange-900/50", "text-accent-orange dark:text-orange-300", "bg-accent-orange"),
+            CondicionColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
+            _ => ("bg-gray-200 dark:bg-gray-600", "text-gray-800 dark:text-gray-300", "bg-gray-500")
+        };
+    }
+}
