@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.2" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.56.0" />
   </ItemGroup>
 

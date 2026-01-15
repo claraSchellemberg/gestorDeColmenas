@@ -28,6 +28,11 @@ builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
+builder.Services.AddHttpClient<INotificacionService, NotificacionService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
+});
+
 
 var app = builder.Build();
 

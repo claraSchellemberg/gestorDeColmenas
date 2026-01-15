@@ -4,10 +4,8 @@ using GestorDeColmenasFrontend.Interfaces;
 
 namespace GestorDeColmenasFrontend.Servicios
 {
-    /// <summary>
-    /// Implementación del servicio de usuario
-    /// Por ahora devuelve datos ficticios, luego se conectará al backend
-    /// </summary>
+    // Implementación del servicio de usuario
+    // Por ahora devuelve datos ficticios, luego se conectará al backend
     public class UsuarioService : IUsuarioService
     {
         private readonly HttpClient _http;
