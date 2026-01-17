@@ -18,15 +18,15 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpClient<IApiariosService, ApiarioService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("BaseUrl")!);
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
 });
 builder.Services.AddHttpClient<IColmenaService, ColmenaService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("BaseUrl")!);
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
 });
 builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("BaseUrl")!);
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
 });
 
 var app = builder.Build();
