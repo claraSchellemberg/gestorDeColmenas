@@ -1,6 +1,6 @@
 using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Colmena;
-using GestorDeColmenasFrontend.Dtos.Mediciones;
+using GestorDeColmenasFrontend.Dtos.Registros;
 using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace GestorDeColmenasFrontend.Pages
         }
 
         public ColmenaDetalleDto? Colmena { get; set; }
-        public List<RegistroMedicionDto> HistorialMediciones { get; set; } = new();
+        public List<RegistroGetDto> HistorialMediciones { get; set; } = new();
         public UsuarioSimpleDto? Usuario { get; set; }
         public List<string> ErroresCarga { get; set; } = new();
 
@@ -43,16 +43,25 @@ namespace GestorDeColmenasFrontend.Pages
                 }
 
                 TotalRegistros = Colmena.CantidadRegistros;
+                HistorialMediciones = await _colmenaService.GetHistorialMedicionesAsync(id, PaginaActual, RegistrosPorPagina);
+                
+                // Agregamos log de debugeo
+                _logger.LogInformation("HistorialMediciones Count: {Count}", HistorialMediciones.Count);
+                foreach (var registro in HistorialMediciones)
+                {
+                    _logger.LogInformation("Registro: Id={Id}, Tipo={Tipo}, Fecha={Fecha}, TempInt1={Temp1}, Peso={Peso}",
+                        registro.Id,
+                        registro.TipoRegistro,
+                        registro.FechaMedicion,
+                        registro.TempInterna1,
+                        registro.Peso);
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al cargar detalle de colmena {ColmenaId}", id);
+                _logger.LogError(ex, "Error al cargar detalle de colmena {idColmena}", id);
                 ErroresCarga.Add($"No se pudo cargar la colmena: {ex.Message}");
             }
-
-            // TODO: Replace with service call when backend is ready
-            HistorialMediciones = DatosFicticios.GetHistorialMediciones();
-
             return Page();
         }
     }

@@ -1,6 +1,7 @@
 using GestorDeColmenasFrontend.Dtos.Apiario;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Mediciones;
+using GestorDeColmenasFrontend.Dtos.Registros;
 using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Modelos;
 
@@ -98,7 +99,7 @@ namespace GestorDeColmenasFrontend.Dev
             Nombre = $"C-{id:D3}",
             ApiarioNombre = "El Robledal",
             Descripcion = "Colmena fuerte, 2 alzas. Reina marcada verde (2024).",
-            FechaInstalacionSensores = new DateTime(2024, 3, 10),
+            FechaInstalaciones = new DateTime(2024, 3, 10),
             Estado = CondicionColmena.OPTIMO,
             CantidadCuadros = 3,
             CantidadRegistros = 1234,
@@ -109,9 +110,9 @@ namespace GestorDeColmenasFrontend.Dev
             Peso = 45.2f
         };
 
-        public static List<RegistroMedicionDto> GetHistorialMediciones()
+        public static List<RegistroGetDto> GetHistorialMediciones()
         {
-            var registros = new List<RegistroMedicionDto>();
+            var registros = new List<RegistroGetDto>();
             var baseDate = DateTime.Now;
             var random = new Random(42); // Seed fijo para consistencia
 
@@ -127,7 +128,7 @@ namespace GestorDeColmenasFrontend.Dev
                 var estadoIndex = i < 5 ? 0 : (i < 8 ? 1 : 2);
                 var (estado, mensaje) = estados[estadoIndex];
 
-                registros.Add(new RegistroMedicionDto
+                registros.Add(new RegistroGetDto
                 {
                     Id = i + 1,
                     FechaMedicion = baseDate.AddHours(-i),

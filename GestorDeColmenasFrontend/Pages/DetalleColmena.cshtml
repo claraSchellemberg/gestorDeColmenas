@@ -90,10 +90,6 @@
                     <span class="material-symbols-outlined">grid_view</span>
                     <span>Colmenas</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
-                    <span class="material-symbols-outlined">description</span>
-                    <span>Registros</span>
-                </a>
             </nav>
             <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-border-light dark:border-border-dark">
                 <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
@@ -134,10 +130,6 @@
                 <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/ListadoColmenas">
                     <span class="material-symbols-outlined">grid_view</span>
                     <span class="text-sm">Colmenas</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
-                    <span class="material-symbols-outlined">description</span>
-                    <span class="text-sm font-medium">Registros</span>
                 </a>
             </nav>
 
@@ -188,7 +180,6 @@
             <!-- Contenido scrolleable -->
             <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
                 <div class="mx-auto max-w-7xl">
-
                     <!-- ========== HEADER ESCRITORIO ========== -->
                     <header class="hidden lg:block mb-8">
                         <div class="flex flex-wrap items-start justify-between gap-4">
@@ -248,7 +239,7 @@
                                 <div class="space-y-4 text-sm">
                                     <div class="flex justify-between">
                                         <span class="text-text-muted">Fecha instalación sensores</span>
-                                        <span class="font-medium">@Model.Colmena?.FechaInstalacionSensores.ToString("dd/MM/yyyy")</span>
+                                        <span class="font-medium">@Model.Colmena?.FechaInstalaciones.ToString("dd/MM/yyyy")</span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-text-muted">Cantidad de cuadros</span>
@@ -274,9 +265,9 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="flex flex-col gap-1 rounded-lg p-4 bg-background-light dark:bg-background-dark">
                                         <p class="text-text-muted text-sm">Temp. Internas</p>
-                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna1.ToString("F1")°C</p>
-                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna2.ToString("F1")°C</p>
-                                        <p class="text-2xl font-bold">@Model.Colmena?.TempInterna3.ToString("F1")°C</p>
+                                        <p class="text-2xl font-bold">@FormatTemp(Model.Colmena?.TempInterna1)</p>
+                                        <p class="text-2xl font-bold">@FormatTemp(Model.Colmena?.TempInterna2)</p>
+                                        <p class="text-2xl font-bold">@FormatTemp(Model.Colmena?.TempInterna3)</p>
                                     </div>
                                     <div class="flex flex-col gap-1 rounded-lg p-4 bg-background-light dark:bg-background-dark">
                                         <p class="text-text-muted text-sm">Peso</p>
@@ -291,9 +282,6 @@
 
                             <!-- Tabs escritorio -->
                             <div class="hidden lg:flex border-b border-border-light dark:border-border-dark gap-8 mb-6">
-                                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted hover:text-text-light pb-3 pt-2" href="#">
-                                    <span class="text-sm font-bold">Historial</span>
-                                </a>
                                 <a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary pb-3 pt-2" href="#">
                                     <span class="text-primary text-sm font-bold">Registros</span>
                                 </a>
@@ -366,16 +354,16 @@
                                     </div>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-sm text-left">
+                                    <table class="w-full text-sm text-left table-fixed">
                                         <thead class="border-b border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800">
                                             <tr>
-                                                <th class="px-6 py-3 font-medium text-text-muted" scope="col">Fecha</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 1</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 2</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 3</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Temp. Ext.</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted text-center" scope="col">Peso</th>
-                                                <th class="px-6 py-3 font-medium text-text-muted" scope="col">Estado</th>
+                                                <th class="px-3 py-3 font-medium text-text-muted w-[140px]" scope="col">Fecha</th>
+                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 1</th>
+                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 2</th>
+                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 3</th>
+                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Ext.</th>
+                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Peso</th>
+                                                <th class="px-3 py-3 font-medium text-text-muted" scope="col">Estado</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -387,15 +375,15 @@
                                                 var rowBg = rowIndex % 2 == 0 ? "" : "bg-background-light dark:bg-slate-800/50";
                                                 var (tableBg, tableText, tableDot) = GetStatusColors(registro.Estado);
                                                 <tr class="border-b border-border-light dark:border-border-dark @rowBg">
-                                                    <td class="px-6 py-4 whitespace-nowrap font-medium">@registro.FechaMedicion.ToString("dd/MM/yyyy HH:mm")</td>
-                                                    <td class="px-6 py-4 text-center">@registro.TempInterna1.ToString("F1")°C</td>
-                                                    <td class="px-6 py-4 text-center">@registro.TempInterna2.ToString("F1")°C</td>
-                                                    <td class="px-6 py-4 text-center">@registro.TempInterna3.ToString("F1")°C</td>
-                                                    <td class="px-6 py-4 text-center">@registro.TempExterna.ToString("F1")°C</td>
-                                                    <td class="px-6 py-4 text-center">@registro.Peso.ToString("F1") kg</td>
-                                                    <td class="px-6 py-4">
-                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @tableBg @tableText">
-                                                            <span class="w-2 h-2 mr-1.5 @tableDot rounded-full"></span>
+                                                    <td class="px-3 py-4 whitespace-nowrap font-medium text-xs">@registro.FechaMedicion.ToString("dd/MM/yyyy HH:mm")</td>
+                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna1)</td>
+                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna2)</td>
+                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna3)</td>
+                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempExterna)</td>
+                                                    <td class="px-2 py-4 text-center">@FormatPeso(registro.Peso)</td>
+                                                    <td class="px-3 py-4">
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium @tableBg @tableText">
+                                                            <span class="w-1.5 h-1.5 mr-1 @tableDot rounded-full"></span>
                                                             @registro.EstadoTexto
                                                         </span>
                                                     </td>
@@ -476,5 +464,20 @@
             CondicionColmena.EN_PELIGRO => ("bg-red-100 dark:bg-red-900/50", "text-accent-red dark:text-red-300", "bg-accent-red"),
             _ => ("bg-gray-200 dark:bg-gray-600", "text-gray-800 dark:text-gray-300", "bg-gray-500")
         };
+    }
+    string FormatTemp(float? value)
+    {
+        if(value == 0 || value is null) return "--°C";
+        else
+        {
+            return value.Value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "°C";
+        }
+    }
+
+    string FormatPeso(float? value)
+    {
+        if (!value.HasValue || value.Value == 0f)
+            return " - kg";
+        return value.Value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + " kg";
     }
 }
