@@ -87,7 +87,7 @@
                     <span>Apiarios</span>
                 </a>
                 <a href="/ListadoColmenas" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium">
-                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">hive</span>
                     <span>Colmenas</span>
                 </a>
             </nav>
@@ -219,20 +219,10 @@
                         </div>
                     </div>
 
-                    <!-- Tabs de navegación (tablet) -->
-                    <div class="hidden md:block lg:hidden border-b border-border-light dark:border-border-dark mb-6">
-                        <nav class="-mb-px flex space-x-6">
-                            <a class="border-transparent hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500" href="#">Resumen</a>
-                            <a class="border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm" href="#">Registros</a>
-                            <a class="border-transparent hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500" href="#">Configuración</a>
-                        </nav>
-                    </div>
-
                     <!-- ========== LAYOUT PRINCIPAL ========== -->
-                    <div class="grid grid-cols-12 gap-6 lg:gap-8">
-
+                    <div class="registro-layout">
                         <!-- Sidebar de información (escritorio) -->
-                        <aside class="hidden lg:block col-span-3 space-y-6">
+                        <div class="registro-summary grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                             <!-- Info clave -->
                             <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-6">
                                 <h2 class="text-lg font-bold mb-4">Información Clave</h2>
@@ -275,17 +265,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </aside>
+                        </div>
 
                         <!-- Contenido principal (tabla de registros) -->
-                        <div class="col-span-12 lg:col-span-9">
-
-                            <!-- Tabs escritorio -->
-                            <div class="hidden lg:flex border-b border-border-light dark:border-border-dark gap-8 mb-6">
-                                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary pb-3 pt-2" href="#">
-                                    <span class="text-primary text-sm font-bold">Registros</span>
-                                </a>
-                            </div>
+                        <div class="registro-table">
 
                             <!-- ========== VISTA MÓVIL: CARDS ========== -->
                             <div class="md:hidden space-y-4">
