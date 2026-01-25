@@ -2,10 +2,7 @@
 {
     public class CuadroModel
     {
-        public ColmenaModel Colmena { get; set; }
-        public List<MedicionPorCuadroModel> Mediciones { get; set; }
-        public MedicionPorCuadroModel? UltimaMedicion =>
-           Mediciones?.OrderByDescending(m => m.FechaMedicion).FirstOrDefault();
-
+        public int Id { get; set; }
+        public MedicionPorCuadroModel UltimaMedicion { get; set; }
     }
 }
