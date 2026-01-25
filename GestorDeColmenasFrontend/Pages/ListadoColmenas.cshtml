@@ -41,18 +41,18 @@
             },
         };
     </script>
-    @* <style type="text/tailwindcss">
-        @layer base {
+    <style type="text/tailwindcss">
+        @@layer base {
             .material-symbols-outlined {
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             }
         }
-    </style> *@
+    </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark min-h-screen flex">
     <aside class="w-64 border-r border-border-light dark:border-border-dark bg-white dark:bg-gray-900 hidden lg:flex flex-col sticky top-0 h-screen">
         <div class="p-6">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-8 mt-2">
                 <img alt="Profile" class="w-10 h-10 rounded-full" src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")" />
                 <div class="overflow-hidden">
                     <p class="text-sm font-bold truncate">@(Model.Usuario?.Nombre ?? "Usuario")</p>
@@ -92,13 +92,15 @@
                     <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white">Colmenas</h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">Listado de colmenas con mediciones de cuadros y sensores externos.</p>
                 </div>
-                <form method="post" asp-page-handler="AgregarColmena" class="flex items-center gap-3">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-gray-900 shadow-sm transition-all hover:bg-accent-honey focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                        <span class="material-symbols-outlined">add</span>
-                        Agregar Colmena
+
+                @* Button now opens modal instead of submitting immediately *@
+                <div class="flex items-center gap-3">
+                    <button type="button" id="btnAbrirModalColmena"
+                            class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary/10 text-accent-honey border-accent-honey border-2 px-6 py-2.5 text-sm font-bold shadow-sm transition-colors hover:bg-accent-honey hover:text-white focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        <span class="material-symbols-outlined text-current">add</span>
+                        <span class="font-bold text-current">Agregar Colmena</span>
                     </button>
-                </form>
+                </div>
             </div>
 
             @if (Model.ErroresCarga.Any())
@@ -121,7 +123,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wider">
+                            <tr class="bg-primary/10 dark:bg-gray-800/50 text-accent-honey dark:text-gray-400 text-xs uppercase font-bold tracking-wider">
                                 <th class="px-6 py-4 border-b border-border-light dark:border-border-dark">Colmena</th>
                                 <th class="px-6 py-4 border-b border-border-light dark:border-border-dark">Cuadros</th>
                                 <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Temp. Int. 1</th>
@@ -194,7 +196,7 @@
                                                             </span>
                                                         </td>
                                                         <td class="px-6 py-4 text-right align-middle border-l border-border-light dark:border-border-dark" rowspan="@cuadrosCount">
-                                                            <a class="text-primary hover:text-accent-honey font-bold transition-colors" href="/DetalleColmena/@colmena.Id">Ver Detalles</a>
+                                                            <a class="text-primary hover:text-accent-honey font-bold transition-colores" href="/DetalleColmena/@colmena.Id">Ver Detalles</a>
                                                         </td>
                                                     }
                                                 </tr>
@@ -219,7 +221,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 text-right align-middle border-l border-border-light dark:border-border-dark">
-                                                    <a class="text-primary hover:text-accent-honey font-bold transition-colors" href="/DetalleColmena/@colmena.Id">Ver Detalles</a>
+                                                    <a class="text-primary hover:text-accent-honey font-bold transition-colores" href="/DetalleColmena/@colmena.Id">Ver Detalles</a>
                                                 </td>
                                             </tr>
                                         }
@@ -232,6 +234,97 @@
             </div>
         </div>
     </main>
+
+    @* Modal for creating a new Colmena (uses PageModel.NuevaColmena and posts to handler AgregarColmena) *@
+    <div id="modalColmena" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-full max-w-lg mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold">Nueva Colmena</h2>
+                <button id="btnCerrarModalColmena" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form method="post" asp-page-handler="AgregarColmena" class="space-y-4">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nombre</label>
+                        <input asp-for="NuevaColmena.Nombre" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary" />
+                        <span asp-validation-for="NuevaColmena.Nombre" class="text-sm text-accent-red"></span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Descripción</label>
+                        <textarea asp-for="NuevaColmena.Descripcion" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
+                        <span asp-validation-for="NuevaColmena.Descripcion" class="text-sm text-accent-red"></span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Apiario</label>
+                        <select asp-for="NuevaColmena.ApiarioId" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark">
+                            <option value="">-- Seleccione --</option>
+                            @foreach (var api in Model.Apiarios)
+                            {
+                                <option value="@api.Id" selected="@(Model.NuevaColmena?.ApiarioId == api.Id ? "selected" : null)">@api.Nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="NuevaColmena.ApiarioId" class="text-sm text-accent-red"></span>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de cuadros</label>
+                        <input asp-for="NuevaColmena.CantidadCuadros" type="number" min="1" class="w-full border border-border-light dark:border-border-dark rounded-lg p-2.5 bg-card-light dark:bg-card-dark" />
+                        <span asp-validation-for="NuevaColmena.CantidadCuadros" class="text-sm text-accent-red"></span>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-4">
+                    <button type="button" id="btnCancelarModalColmena" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 font-medium hover:bg-gray-300 dark:hover:bg-gray-600">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-gray-900 font-bold hover:bg-accent-honey">
+                        Guardar
+                    </button>
+                </div>
+
+                <div class="mt-2">
+                    <span asp-validation-summary="ModelOnly" class="text-sm text-accent-red"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal control
+        const modalColmena = document.getElementById('modalColmena');
+        const btnAbrirModal = document.getElementById('btnAbrirModalColmena');
+        const btnCerrarModal = document.getElementById('btnCerrarModalColmena');
+        const btnCancelarModal = document.getElementById('btnCancelarModalColmena');
+
+        function abrirModalColmena() {
+            modalColmena.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function cerrarModalColmena() {
+            modalColmena.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        btnAbrirModal?.addEventListener('click', abrirModalColmena);
+        btnCerrarModal?.addEventListener('click', cerrarModalColmena);
+        btnCancelarModal?.addEventListener('click', cerrarModalColmena);
+
+        // If server-side set MostrarModal (validation errors), open modal on load so user sees errors.
+        @if (Model.MostrarModal)
+        {
+            <text>
+            document.addEventListener('DOMContentLoaded', function () {
+                abrirModalColmena();
+            });
+            </text>
+        }
+    </script>
 
 </body>
 </html>

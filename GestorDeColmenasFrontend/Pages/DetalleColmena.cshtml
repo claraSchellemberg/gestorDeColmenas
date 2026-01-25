@@ -23,19 +23,17 @@
                     colors: {
                         "primary": "#FFC107",
                         "background-light": "#F8F9FA",
-                        "background-dark": "#1e293b",
+                        "background-dark": "#111827",
                         "card-light": "#FFFFFF",
-                        "card-dark": "#334155",
-                        "text-light": "#343A40",
-                        "text-dark": "#e2e8f0",
-                        "text-muted": "#6B7280",
+                        "card-dark": "#1f2937",
+                        "text-light": "#374151",
+                        "text-dark": "#f3f4f6",
                         "border-light": "#e5e7eb",
-                        "border-dark": "#475569",
+                        "border-dark": "#374151",
                         "accent-honey": "#E69B00",
-                        "accent-green": "#4CAF50",
-                        "accent-blue": "#2196F3",
-                        "accent-red": "#F44336",
-                        "accent-orange": "#FF9800",
+                        "accent-green": "#10b981",
+                        "accent-red": "#ef4444",
+                        "accent-orange": "#f59e0b",
                     },
                     fontFamily: { "display": ["Inter", "sans-serif"] },
                     borderRadius: { "DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px" }
@@ -43,104 +41,51 @@
             }
         };
     </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    <style type="text/tailwindcss">
+        @@layer base {
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
         }
     </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
-
-    <!-- ========== MENÚ HAMBURGUESA MÓVIL ========== -->
-    <div id="menuMobile" class="fixed inset-0 z-50 hidden">
-        <!-- Overlay -->
-        <div id="menuOverlay" class="absolute inset-0 bg-black/50"></div>
-        <!-- Panel del menú -->
-        <div id="menuPanel" class="absolute left-0 top-0 h-full w-72 bg-card-light dark:bg-card-dark shadow-xl transform -translate-x-full transition-transform duration-300">
-            <div class="p-4 border-b border-border-light dark:border-border-dark">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
-                             alt="Avatar"
-                             class="h-10 w-10 rounded-full object-cover" />
-                        <div>
-                            <p class="font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</p>
-                            <p class="text-sm text-text-muted">@(Model.Usuario?.Email ?? "")</p>
-                        </div>
+    <div class="flex min-h-screen">
+        <aside class="w-64 border-r border-border-light dark:border-border-dark bg-white dark:bg-gray-900 hidden lg:flex flex-col sticky top-0 h-screen">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-8 mt-2">
+                    <img alt="Profile" class="w-10 h-10 rounded-full" src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")" />
+                    <div class="overflow-hidden">
+                        <p class="text-sm font-bold truncate">@(Model.Usuario?.Nombre ?? "Usuario")</p>
+                        <p class="text-xs text-gray-500 truncate">@(Model.Usuario?.Email ?? "")</p>
                     </div>
-                    <button id="btnCerrarMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
                 </div>
+                <nav class="space-y-1">
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/PerfilUsuario">
+                        <span class="material-symbols-outlined">person</span>
+                        <span class="text-sm font-medium">Mi Perfil</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/Dashboard">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/ListadoApiarios">
+                        <span class="material-symbols-outlined">hive</span>
+                        <span class="text-sm font-medium">Apiarios</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-accent-honey transition-colors" href="/ListadoColmenas">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">hive</span>
+                        <span class="text-sm font-bold">Colmenas</span>
+                    </a>
+                </nav>
             </div>
-            <nav class="p-4 space-y-2">
-                <a href="/PerfilUsuario" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
-                    <span class="material-symbols-outlined">person</span>
-                    <span>Mi Perfil</span>
-                </a>
-                <a href="/Dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/ListadoApiarios" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
-                    <span class="material-symbols-outlined">hive</span>
-                    <span>Apiarios</span>
-                </a>
-                <a href="/ListadoColmenas" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">hive</span>
-                    <span>Colmenas</span>
-                </a>
-            </nav>
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-border-light dark:border-border-dark">
-                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span>Cerrar Sesión</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex h-screen w-full flex-col lg:flex-row">
-
-        <!-- ========== SIDEBAR ESCRITORIO (lg+) ========== -->
-        <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4 flex-shrink-0">
-            <div class="flex items-center gap-3 px-2 mb-6">
-                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
-                     alt="Avatar"
-                     class="h-10 w-10 rounded-full object-cover" />
-                <div class="flex flex-col">
-                    <span class="text-base font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</span>
-                    <span class="text-text-muted text-sm">@(Model.Usuario?.Email ?? "")</span>
-                </div>
-            </div>
-
-            <nav class="flex flex-col gap-2">
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/PerfilUsuario">
-                    <span class="material-symbols-outlined">person</span>
-                    <span class="text-sm font-medium">Mi Perfil</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/Dashboard">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <span class="text-sm font-medium">Dashboard</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/ListadoApiarios">
-                    <span class="material-symbols-outlined">hive</span>
-                    <span class="text-sm font-medium">Apiarios</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/ListadoColmenas">
-                    <span class="material-symbols-outlined">grid_view</span>
-                    <span class="text-sm">Colmenas</span>
-                </a>
-            </nav>
-
-            <div class="mt-auto">
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+            <div class="mt-auto p-6 border-t border-border-light dark:border-border-dark">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors" href="#">
                     <span class="material-symbols-outlined">logout</span>
                     <span class="text-sm font-medium">Cerrar Sesión</span>
                 </a>
             </div>
         </aside>
-
         <!-- ========== CONTENIDO PRINCIPAL ========== -->
         <div class="flex-1 flex flex-col min-h-screen lg:min-h-0 overflow-hidden">
 
@@ -237,7 +182,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-text-muted">Total registros</span>
-                                        <span class="font-medium">@Model.Colmena?.CantidadRegistros.ToString("N0")</span>
+                                        <span class="font-medium">@Model.TotalRegistros.ToString("N0")</span>
                                     </div>
                                     @if (!string.IsNullOrEmpty(Model.Colmena?.Descripcion))
                                     {
@@ -262,6 +207,8 @@
                                     <div class="flex flex-col gap-1 rounded-lg p-4 bg-background-light dark:bg-background-dark">
                                         <p class="text-text-muted text-sm">Peso</p>
                                         <p class="text-2xl font-bold">@Model.Colmena?.Peso.ToString("F1") kg</p>
+                                        <p class="text-text-muted text-sm">Temp. Externa</p>
+                                        <p class="text-2xl font-bold">@Model.Colmena?.TempExterna.ToString("F1") °C</p>
                                     </div>
                                 </div>
                             </div>
@@ -328,50 +275,75 @@
                                 <div class="p-6 border-b border-border-light dark:border-border-dark">
                                     <div class="flex flex-wrap gap-4 justify-between items-center">
                                         <h3 class="text-lg font-bold">Registros de la Colmena</h3>
-                                        <div class="relative">
-                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xl">search</span>
-                                            <input class="w-64 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark py-2 pl-10 pr-4 text-sm focus:border-primary focus:ring-primary"
-                                                   placeholder="Buscar registros..."
-                                                   type="text" />
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table class="w-full text-sm text-left table-fixed">
-                                        <thead class="border-b border-border-light dark:border-border-dark bg-background-light dark:bg-slate-800">
-                                            <tr>
-                                                <th class="px-3 py-3 font-medium text-text-muted w-[140px]" scope="col">Fecha</th>
-                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 1</th>
-                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 2</th>
-                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Int. 3</th>
-                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Temp. Ext.</th>
-                                                <th class="px-2 py-3 font-medium text-text-muted text-center" scope="col">Peso</th>
-                                                <th class="px-3 py-3 font-medium text-text-muted" scope="col">Estado</th>
+                                    <table class="w-full text-sm text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-primary/10 dark:bg-gray-800/50 text-accent-honey dark:text-gray-400 text-xs uppercase font-bold tracking-wider">
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark">Cuadros</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Temp. Int. 1</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Temp. Int. 2</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Temp. Int. 3</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Temp. Ext.</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark text-center">Peso</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark">Estado</th>
+                                                <th class="px-6 py-4 border-b border-border-light dark:border-border-dark w-[140px]">Fecha</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody class="divide-y divide-border-light dark:divide-border-dark">
                                             @{
                                                 var rowIndex = 0;
                                             }
-                                            @foreach (var registro in Model.HistorialMediciones)
+                                            @if (!Model.HistorialMediciones.Any())
                                             {
-                                                var rowBg = rowIndex % 2 == 0 ? "" : "bg-background-light dark:bg-slate-800/50";
-                                                var (tableBg, tableText, tableDot) = GetStatusColors(registro.Estado);
-                                                <tr class="border-b border-border-light dark:border-border-dark @rowBg">
-                                                    <td class="px-3 py-4 whitespace-nowrap font-medium text-xs">@registro.FechaMedicion.ToString("dd/MM/yyyy HH:mm")</td>
-                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna1)</td>
-                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna2)</td>
-                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempInterna3)</td>
-                                                    <td class="px-2 py-4 text-center">@FormatTemp(registro.TempExterna)</td>
-                                                    <td class="px-2 py-4 text-center">@FormatPeso(registro.Peso)</td>
-                                                    <td class="px-3 py-4">
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium @tableBg @tableText">
-                                                            <span class="w-1.5 h-1.5 mr-1 @tableDot rounded-full"></span>
-                                                            @registro.EstadoTexto
-                                                        </span>
+                                                <tr>
+                                                    <td colspan="8" class="px-6 py-8 text-center text-text-muted">
+                                                        <span class="material-symbols-outlined text-4xl mb-2">grid_view</span>
+                                                        <p>No hay registros</p>
                                                     </td>
                                                 </tr>
-                                                rowIndex++;
+                                            }
+                                            else
+                                            {
+                                                foreach (var registro in Model.HistorialMediciones)
+                                                {
+                                                    var rowBg = rowIndex % 2 == 0 ? "" : "bg-background-light dark:bg-slate-800/50";
+                                                    var (tableBg, tableText, tableDot) = GetStatusColors(registro.Estado);
+                                                    var cuadrosCount = Model.Colmena?.CantidadCuadros ?? 0;
+                                                    var cuadroNumber = cuadrosCount > 0 ? (rowIndex % cuadrosCount) + 1 : 0;
+
+                                                    <tr class="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 @rowBg">
+                                                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-medium italic text-center">
+                                                            @(cuadroNumber > 0 ? $"Cuadro {cuadroNumber}" : "-")
+                                                        </td>
+                                                        <td class="px-6 py-4 text-center">
+                                                            @FormatTemp(registro.TempInterna1)
+                                                        </td>
+                                                        <td class="px-6 py-4 text-center">
+                                                            @FormatTemp(registro.TempInterna2)
+                                                        </td>
+                                                        <td class="px-6 py-4 text-center">
+                                                            @FormatTemp(registro.TempInterna3)
+                                                        </td>
+                                                        <td class="px-6 py-4 text-center font-medium">
+                                                            @FormatTemp(registro.TempExterna)
+                                                        </td>
+                                                        <td class="px-6 py-4 text-center font-medium">
+                                                            @FormatPeso(registro.Peso)
+                                                        </td>
+                                                        <td class="px-6 py-4">
+                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold @tableBg @tableText">
+                                                                <span class="w-1.5 h-1.5 mr-1.5 @tableDot rounded-full"></span>
+                                                                @registro.EstadoTexto
+                                                            </span>
+                                                        </td>
+                                                        <td class="px-6 py-4 text-right whitespace-nowrap font-medium text-xs">
+                                                            @registro.FechaMedicion.ToString("dd/MM/yyyy HH:mm")
+                                                        </td>
+                                                    </tr>
+                                                    rowIndex++;
+                                                }
                                             }
                                         </tbody>
                                     </table>
@@ -434,6 +406,7 @@
             }
         });
     </script>
+    <div />
 </body>
 </html>
 
@@ -450,7 +423,7 @@
     }
     string FormatTemp(float? value)
     {
-        if(value == 0 || value is null) return "--°C";
+        if (value == 0 || value is null) return "-";
         else
         {
             return value.Value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "°C";
@@ -460,7 +433,7 @@
     string FormatPeso(float? value)
     {
         if (!value.HasValue || value.Value == 0f)
-            return " - kg";
+            return " - ";
         return value.Value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + " kg";
     }
 }
