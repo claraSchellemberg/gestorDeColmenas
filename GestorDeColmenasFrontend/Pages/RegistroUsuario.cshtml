@@ -45,8 +45,8 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-3 sm:p-4">
-    <div class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-lg sm:rounded-xl soft-shadow overflow-hidden flex flex-col border border-zinc-100 dark:border-zinc-800">
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
+    <div class="w-full max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-zinc-900 rounded-lg sm:rounded-xl soft-shadow overflow-hidden flex flex-col border border-zinc-100 dark:border-zinc-800">
         
         <!-- Header -->
         <div class="pt-6 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 flex flex-col items-center">
@@ -92,11 +92,11 @@
                     <span class="material-symbols-outlined text-sm">person</span>
                     <span>Nombre completo</span>
                 </label>
-                <input asp-for="Perfil.Nombre"
+                <input asp-for="NuevoUsuario.Nombre"
                        class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-10 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
                        placeholder="Ej. Juan Pérez"
                        required />
-                <span asp-validation-for="Perfil.Nombre" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.Nombre" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Número de Apicultor -->
@@ -105,11 +105,11 @@
                     <span class="material-symbols-outlined text-sm">badge</span>
                     <span>Número de apicultor</span>
                 </label>
-                <input asp-for="Perfil.NumeroApicultor"
+                <input asp-for="NuevoUsuario.NumeroApicultor"
                        class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-10 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
                        placeholder="Ej. AP-001"
                        required />
-                <span asp-validation-for="Perfil.NumeroApicultor" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.NumeroApicultor" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Email -->
@@ -118,12 +118,12 @@
                     <span class="material-symbols-outlined text-sm">mail</span>
                     <span>Correo electrónico</span>
                 </label>
-                <input asp-for="Perfil.Email"
+                <input asp-for="NuevoUsuario.Email"
                        class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-10 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
                        placeholder="usuario@ejemplo.com"
                        type="email"
                        required />
-                <span asp-validation-for="Perfil.Email" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.Email" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Teléfono -->
@@ -132,11 +132,11 @@
                     <span class="material-symbols-outlined text-sm">smartphone</span>
                     <span>Número de celular</span>
                 </label>
-                <input asp-for="Perfil.NumeroTelefono"
+                <input asp-for="NuevoUsuario.NumeroTelefono"
                        class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-10 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
                        placeholder="+598 99 123 456"
                        type="tel" />
-                <span asp-validation-for="Perfil.NumeroTelefono" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.NumeroTelefono" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Canal Preferido -->
@@ -145,7 +145,7 @@
                 <div class="grid grid-cols-2 gap-2">
                     <!-- Email -->
                     <label class="flex items-center justify-center p-2 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                        <input asp-for="Perfil.MedioDeComunicacionDePreferencia"
+                        <input asp-for="NuevoUsuario.MedioDeComunicacionDePreferencia"
                                type="radio"
                                value="0"
                                class="sr-only" />
@@ -154,7 +154,7 @@
                     
                     <!-- SMS -->
                     <label class="flex items-center justify-center p-2 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                        <input asp-for="Perfil.MedioDeComunicacionDePreferencia"
+                        <input asp-for="NuevoUsuario.MedioDeComunicacionDePreferencia"
                                type="radio"
                                value="1"
                                class="sr-only" />
@@ -167,7 +167,7 @@
                     </label>
                 </div>
                 <p class="text-xs text-zinc-500 dark:text-zinc-400 -mt-1">*WhatsApp se implementará próximamente</p>
-                <span asp-validation-for="Perfil.MedioDeComunicacionDePreferencia" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.MedioDeComunicacionDePreferencia" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Contraseña -->
@@ -177,7 +177,7 @@
                     <span>Contraseña</span>
                 </label>
                 <div class="relative">
-                    <input asp-for="Perfil.Contraseña"
+                    <input asp-for="NuevoUsuario.Contraseña"
                            id="passwordInput"
                            class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-10 px-3 pr-10 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
                            placeholder="••••••••"
@@ -191,7 +191,7 @@
                         <span class="material-symbols-outlined text-sm" id="visibilityIcon">visibility</span>
                     </button>
                 </div>
-                <span asp-validation-for="Perfil.Contraseña" class="text-red-600 dark:text-red-400 text-xs"></span>
+                <span asp-validation-for="NuevoUsuario.Contraseña" class="text-red-600 dark:text-red-400 text-xs"></span>
             </div>
 
             <!-- Submit Button -->
@@ -199,16 +199,6 @@
                 <span>Crear cuenta</span>
                 <span class="material-symbols-outlined text-sm hidden sm:inline">arrow_forward</span>
             </button>
-
-            <!-- Divider -->
-            <div class="relative my-2">
-                <div aria-hidden="true" class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-zinc-100 dark:border-zinc-800"></div>
-                </div>
-                <div class="relative flex justify-center text-xs uppercase">
-                    <span class="bg-white dark:bg-zinc-900 px-2 text-zinc-400 font-medium tracking-widest text-[10px]">O</span>
-                </div>
-            </div>
 
             <!-- Login Link -->
             <div class="text-center">
@@ -219,7 +209,7 @@
             </div>
         </form>
     </div>
-</body>
+</body>     
 </html>
 
 @section Scripts {

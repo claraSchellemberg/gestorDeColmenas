@@ -14,7 +14,7 @@ namespace GestorDeColmenasFrontend.Pages
     {
         private readonly IApiariosService _apiariosService;
         //lo que agregue a partir de usuarios
-        private readonly IUsuarioService _usuarioService = new UsuarioService();
+        private readonly IUsuarioService _usuarioService;
         public ListadoApiariosModel(IApiariosService apiariosService, IUsuarioService usuarioService)
         {
             _apiariosService = apiariosService;

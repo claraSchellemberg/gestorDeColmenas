@@ -15,7 +15,7 @@ namespace GestorDeColmenasFrontend.Pages
         private readonly IColmenaService _colmenaService;
         private readonly ILogger<DetalleColmenaModel> _logger;
         //
-        private readonly IUsuarioService _usuarioService = new UsuarioService();
+        private readonly IUsuarioService _usuarioService;
 
         public DetalleColmenaModel(IColmenaService colmenaService, ILogger<DetalleColmenaModel> logger, IUsuarioService usuarioService)
         {

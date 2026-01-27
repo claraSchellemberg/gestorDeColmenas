@@ -1,46 +1,24 @@
 using GestorDeColmenasFrontend.Dtos;
 using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Interfaces;
-using Microsoft.Playwright;
+using GestorDeColmenasFrontend.Modelos;
 using System.Text.Json;
-using static System.Net.WebRequestMethods;
 
 namespace GestorDeColmenasFrontend.Servicios
 {
     /// <summary>
-    /// Implementación del servicio de usuario
-    /// Por ahora devuelve datos ficticios, luego se conectará al backend
-    /// </summary>
-
-
-    /// <summary>
-    /// Implementación del servicio de usuario
-    /// Maneja la comunicación con el backend para autenticación y gestión de perfil
+    /// Implementación del servicio de usuario.
+    /// Maneja la comunicación con el backend para autenticación y gestión de perfil.
     /// </summary>
     public class UsuarioService : IUsuarioService
     {
-        /*private readonly HttpClient _http;
-
-        public UsuarioService(HttpClient http)
-        {
-            _http = http;
-        }
-
-        public Task<UsuarioSimpleDto> GetUsuarioActualAsync()
-        {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
-        }*/
-
         private readonly HttpClient _http;
         private readonly ILogger<UsuarioService> _logger;
+
         public UsuarioService(HttpClient http, ILogger<UsuarioService> logger)
         {
             _http = http;
             _logger = logger;
-        }
-
-        public UsuarioService()
-        {
         }
 
         /// <summary>
@@ -50,27 +28,23 @@ namespace GestorDeColmenasFrontend.Servicios
         {
             try
             {
-                //var response = await _http.PostAsJsonAsync("Usuarios/autenticar", credenciales);
                 var response = await _http.PostAsJsonAsync("login/login", credenciales);
                 if (response.IsSuccessStatusCode)
                 {
-                    //var usuario = await response.Content.ReadFromJsonAsync<UsuarioSimpleDto>();
                     var resultado = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
-                    if(resultado?.Token != null)
+                    if (resultado?.Token != null)
                     {
-                        //probando alternativa de deserializar los datos del usuario dentro del token
-                        ///que viene como un JSON string.
                         ObtenerUsuarioCompletoDto? usuarioDelToken = null;
                         try
                         {
-                            usuarioDelToken= JsonSerializer.Deserialize<ObtenerUsuarioCompletoDto>(resultado.Token);
+                            usuarioDelToken = JsonSerializer.Deserialize<ObtenerUsuarioCompletoDto>(resultado.Token);
                         }
                         catch (JsonException ex)
                         {
                             _logger.LogError(ex, "Error al deserializar el token para el usuario {Email}", credenciales.Email);
                             return null;
                         }
-                        if(usuarioDelToken == null)
+                        if (usuarioDelToken == null)
                         {
                             _logger.LogWarning("No se pudo extraer los datos del usuario del token para {Email}", credenciales.Email);
                             return null;
@@ -86,13 +60,6 @@ namespace GestorDeColmenasFrontend.Servicios
                     }
                     _logger.LogWarning("Token nulo en la respuesta de autenticación para el usuario {Email}", credenciales.Email);
                     return null;
-                   // {
-                        //_logger.LogWarning("Token nulo en la respuesta de autenticación para el usuario {Email}", credenciales.Email);
-                        //return null;
-                    //}
-                    //pruebo
-                    //_logger.LogInformation("Usuario {Email} autenticado exitosamente", credenciales.Email);
-                    //return usuario;
                 }
                 else
                 {
@@ -115,7 +82,6 @@ namespace GestorDeColmenasFrontend.Servicios
 
         /// <summary>
         /// Obtiene el perfil completo del usuario
-        /// El usuarioId viene de la sesión
         /// </summary>
         public async Task<UsuarioCreateDto?> GetPerfilAsync(int usuarioId)
         {
@@ -149,7 +115,6 @@ namespace GestorDeColmenasFrontend.Servicios
 
         /// <summary>
         /// Actualiza el perfil del usuario
-        /// El usuarioId viene de la sesión
         /// </summary>
         public async Task<bool> ActualizarPerfilAsync(int usuarioId, UsuarioCreateDto perfil)
         {
@@ -183,8 +148,6 @@ namespace GestorDeColmenasFrontend.Servicios
 
         /// <summary>
         /// Obtiene los datos mínimos del usuario actual (para header/sidebar)
-        /// Usado en páginas para mostrar nombre, email y foto de perfil
-        /// El usuarioId viene de la sesión
         /// </summary>
         public async Task<UsuarioSimpleDto?> GetUsuarioActualAsync(int usuarioId)
         {
@@ -216,6 +179,37 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-    }
+        /// <summary>
+        /// Registra un nuevo usuario en el backend
+        /// </summary>
+        public async Task<RegistroUsuarioModel> RegistrarUsuarioAsync(UsuarioCreateDto dto)
+        {
+            try
+            {
+                var resp = await _http.PostAsJsonAsync("Usuarios", dto);
 
+                if (!resp.IsSuccessStatusCode)
+                {
+                    var body = await resp.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Error creando usuario: {StatusCode} - {Body}", resp.StatusCode, body);
+                    throw new InvalidOperationException($"Error creando usuario: {(int)resp.StatusCode} {body}");
+                }
+
+                var usuarioCreado = await resp.Content.ReadFromJsonAsync<RegistroUsuarioModel>();
+                if (usuarioCreado is null)
+                {
+                    _logger.LogWarning("El backend devolvió contenido vacío al crear usuario.");
+                    throw new InvalidOperationException("El backend no devolvió el usuario creado.");
+                }
+
+                _logger.LogInformation("Usuario creado exitosamente. Email: {Email} Id: {Id}", usuarioCreado.Email, usuarioCreado.Id);
+                return usuarioCreado;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Error de conexión al crear usuario {Email}", dto?.Email);
+                throw;
+            }
+        }
+    }
 }

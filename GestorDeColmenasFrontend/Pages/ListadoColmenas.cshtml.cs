@@ -16,7 +16,7 @@ namespace GestorDeColmenasFrontend.Pages
         private readonly IApiariosService _apiarioService;
         private readonly ILogger<ListadoColmenasModel> _logger;
         //lo que agregue a partir de usuarios
-        private readonly IUsuarioService _usuarioService = new UsuarioService();
+        private readonly IUsuarioService _usuarioService;
 
         public ListadoColmenasModel(
             IColmenaService colmenaService, 

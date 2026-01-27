@@ -1,4 +1,7 @@
+using GestorDeColmenasFrontend.Dtos.Apiario;
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Modelos;
+using GestorDeColmenasFrontend.Pages;
 
 namespace GestorDeColmenasFrontend.Interfaces
 {
@@ -26,5 +29,8 @@ namespace GestorDeColmenasFrontend.Interfaces
         /// El usuarioId viene de la sesión
         /// </summary>
         Task<UsuarioSimpleDto?> GetUsuarioActualAsync(int usuarioId);
+
+        //para el registro de usuario
+        Task<Modelos.RegistroUsuarioModel> RegistrarUsuarioAsync(UsuarioCreateDto dto);
     }
 }
