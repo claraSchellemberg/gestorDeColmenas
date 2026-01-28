@@ -1,4 +1,7 @@
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Helpers;
+using GestorDeColmenasFrontend.Interfaces;
+using GestorDeColmenasFrontend.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,6 +9,15 @@ namespace GestorDeColmenasFrontend.Pages
 {
     public class PerfilUsuarioModel : PageModel
     {
+        private readonly IUsuarioService _usuarioService;
+        private readonly ILogger<PerfilUsuarioModel> _logger;
+
+        public PerfilUsuarioModel(IUsuarioService usuarioService, ILogger<PerfilUsuarioModel> logger)
+        {
+            _usuarioService = usuarioService;
+            _logger = logger;
+        }
+
         [BindProperty]
         public PerfilUsuarioDto Usuario { get; set; } = new();
 
@@ -14,41 +26,85 @@ namespace GestorDeColmenasFrontend.Pages
 
         [BindProperty]
         public string? ConfirmarContrasena { get; set; }
-        public void OnGet()
+
+        public string MensajeError { get; set; } = string.Empty;
+        public string MensajeExito { get; set; } = string.Empty;
+
+        // Obtener y mostrar el perfil del usuario logueado
+        public async Task OnGetAsync()
         {
-            // Cargar datos del usuario (datos ficticios por ahora)
-            Usuario = new PerfilUsuarioDto
+            try
             {
-                Nombre = "Juan",
-                //Apellido = "Pérez",
-                Email = "juan.perez@example.com",
-                NumeroTelefono = "+54 9 11 1234-5678",
-                NumeroApicultor = "AP-12345",
-                MedioDeComunicacionDePreferencia = Modelos.CanalPreferidoNotificacion.EMAIL,
-                FotoPerfil = "https://i.pravatar.cc/150?img=67"
-            };
+                int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
+
+                var perfilDto = await _usuarioService.GetPerfilAsync(usuarioId);
+                if (perfilDto is not null)
+                {
+                    // Uso del mapper: asigna directamente a la propiedad binded
+                    Usuario = UsuarioMapper.ToPerfilUsuarioDto(perfilDto);
+                }
+                else
+                {
+                    _logger.LogWarning("No se obtuvo perfil del backend para UsuarioId={UsuarioId}", usuarioId);
+                    MensajeError = "No se pudieron cargar los datos de perfil.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cargar perfil del usuario");
+                MensajeError = "Error al cargar el perfil. Por favor intenta nuevamente.";
+            }
         }
-        public IActionResult OnPostGuardarPerfil()
+
+        // Handler para guardar cambios del perfil (asp-page-handler="GuardarPerfil")
+        public async Task<IActionResult> OnPostGuardarPerfilAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // Validar contraseñas si se ingresaron
+            // Validación de cambio de contraseña
             if (!string.IsNullOrEmpty(NuevaContrasena))
             {
                 if (NuevaContrasena != ConfirmarContrasena)
                 {
-                    ModelState.AddModelError("ConfirmarContrasena", "Las contraseñas no coinciden");
+                    ModelState.AddModelError(nameof(ConfirmarContrasena), "Las contraseñas no coinciden");
                     return Page();
                 }
             }
 
-            // TODO: Guardar cambios en el backend
-            TempData["ToastSuccess"] = "Perfil actualizado correctamente";
+            try
+            {
+                int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
 
-            return RedirectToPage();
+                // Mapear a DTO que espera el servicio usando el mapper
+                var dto = UsuarioMapper.ToUsuarioCreateDto(Usuario);
+                if (!string.IsNullOrEmpty(NuevaContrasena))
+                {
+                    dto.Contraseña = NuevaContrasena;
+                }
+
+                var actualizado = await _usuarioService.ActualizarPerfilAsync(usuarioId, dto);
+                if (actualizado)
+                {
+                    _logger.LogInformation("Perfil del usuario {UsuarioId} actualizado correctamente", usuarioId);
+                    TempData["ToastSuccess"] = "Perfil actualizado correctamente";
+                    return RedirectToPage(); // recarga para mostrar datos actualizados
+                }
+                else
+                {
+                    _logger.LogWarning("El backend respondió sin éxito al actualizar perfil UsuarioId={UsuarioId}", usuarioId);
+                    MensajeError = "No se pudieron guardar los cambios. Por favor intenta nuevamente.";
+                    return Page();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al guardar perfil del usuario");
+                MensajeError = "Ocurrió un error al guardar. Por favor intenta nuevamente.";
+                return Page();
+            }
         }
     }
 }
