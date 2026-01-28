@@ -83,15 +83,15 @@ namespace GestorDeColmenasFrontend.Servicios
         /// <summary>
         /// Obtiene el perfil completo del usuario
         /// </summary>
-        public async Task<UsuarioCreateDto?> GetPerfilAsync(int usuarioId)
+        public async Task<ObtenerUsuarioCompletoDto?> GetPerfilAsync(int usuarioId)
         {
             try
             {
-                var response = await _http.GetAsync($"Usuarios/{usuarioId}/perfil");
+                var response = await _http.GetAsync($"Usuarios/{usuarioId}");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var perfil = await response.Content.ReadFromJsonAsync<UsuarioCreateDto>();
+                    var perfil = await response.Content.ReadFromJsonAsync<ObtenerUsuarioCompletoDto>();
                     return perfil;
                 }
                 else
@@ -120,7 +120,7 @@ namespace GestorDeColmenasFrontend.Servicios
         {
             try
             {
-                var response = await _http.PutAsJsonAsync($"Usuarios/{usuarioId}/perfil", perfil);
+                var response = await _http.PutAsJsonAsync($"Usuarios/{usuarioId}", perfil);
 
                 if (response.IsSuccessStatusCode)
                 {

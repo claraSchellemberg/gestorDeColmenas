@@ -15,7 +15,7 @@ namespace GestorDeColmenasFrontend.Interfaces
         /// Obtiene el perfil completo del usuario
         /// El usuarioId viene de la sesión
         /// </summary>
-        Task<UsuarioCreateDto?> GetPerfilAsync(int usuarioId);
+        Task<ObtenerUsuarioCompletoDto?> GetPerfilAsync(int usuarioId);
 
         /// <summary>
         /// Actualiza el perfil del usuario

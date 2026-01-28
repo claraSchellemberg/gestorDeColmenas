@@ -5,7 +5,7 @@ namespace GestorDeColmenasFrontend.Mappers
     public static class UsuarioMapper
     {
         // Crea un PerfilUsuarioDto a partir de UsuarioCreateDto
-        public static PerfilUsuarioDto ToPerfilUsuarioDto(UsuarioCreateDto? dto)
+        public static PerfilUsuarioDto ToPerfilUsuarioDto(ObtenerUsuarioCompletoDto? dto)
         {
             if (dto is null) return new PerfilUsuarioDto();
             return new PerfilUsuarioDto
