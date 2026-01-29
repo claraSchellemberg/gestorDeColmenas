@@ -2,7 +2,9 @@ using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Registros;
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Helpers;
 using GestorDeColmenasFrontend.Interfaces;
+using GestorDeColmenasFrontend.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -12,11 +14,14 @@ namespace GestorDeColmenasFrontend.Pages
     {
         private readonly IColmenaService _colmenaService;
         private readonly ILogger<DetalleColmenaModel> _logger;
+        //
+        private readonly IUsuarioService _usuarioService;
 
-        public DetalleColmenaModel(IColmenaService colmenaService, ILogger<DetalleColmenaModel> logger)
+        public DetalleColmenaModel(IColmenaService colmenaService, ILogger<DetalleColmenaModel> logger, IUsuarioService usuarioService)
         {
             _colmenaService = colmenaService;
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
         public ColmenaDetalleDto? Colmena { get; set; }
@@ -30,7 +35,10 @@ namespace GestorDeColmenasFrontend.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Usuario = DatosFicticios.GetUsuario();
+            //Usuario = DatosFicticios.GetUsuario();
+            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
+            Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
+                   ?? DatosFicticios.GetUsuario(); // fallback si falla
 
             try
             {

@@ -13,10 +13,13 @@ namespace GestorDeColmenasFrontend.Pages
     {
         private readonly IApiariosService _apiariosService;
         private readonly IColmenaService _colmenasService;
-        public DashboardModel(IApiariosService apiariosService, IColmenaService colmenaService)
+        //agrego el servicio de usuario
+        private readonly IUsuarioService _usuarioService;
+        public DashboardModel(IApiariosService apiariosService, IColmenaService colmenaService, IUsuarioService usuarioService)
         {
             _apiariosService = apiariosService;
             _colmenasService = colmenaService;
+            _usuarioService = usuarioService;
         }
 
         public DashboardViewModel ViewModel { get; set; } = new();
@@ -27,13 +30,17 @@ namespace GestorDeColmenasFrontend.Pages
 
         public async Task OnGetAsync()
         {
+            //cargamos el usuario
+            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
             //cargamos los apiarios en el mapa
-            Apiarios = await _apiariosService.GetApiarios();
+            Apiarios = await _apiariosService.GetApiarios(usuarioId);
 
             ViewModel = new DashboardViewModel
             {
                 Metricas = await GetMetricasAsync(),
-                Usuario = DatosFicticios.GetUsuario()
+                //Usuario = DatosFicticios.GetUsuario()
+                Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
+                   ?? new UsuarioSimpleDto() // fallback
             };
         }
 

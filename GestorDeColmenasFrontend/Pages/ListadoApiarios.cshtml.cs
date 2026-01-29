@@ -4,6 +4,7 @@ using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Helpers;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Mappers;
+using GestorDeColmenasFrontend.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -12,9 +13,12 @@ namespace GestorDeColmenasFrontend.Pages
     public class ListadoApiariosModel : PageModel
     {
         private readonly IApiariosService _apiariosService;
-        public ListadoApiariosModel(IApiariosService apiariosService)
+        //lo que agregue a partir de usuarios
+        private readonly IUsuarioService _usuarioService;
+        public ListadoApiariosModel(IApiariosService apiariosService, IUsuarioService usuarioService)
         {
             _apiariosService = apiariosService;
+            _usuarioService = usuarioService;
         }
         public List<ApiarioListItemDto> Apiarios { get; set; } = new();
         public UsuarioSimpleDto? Usuario { get; set; }
@@ -25,9 +29,12 @@ namespace GestorDeColmenasFrontend.Pages
         public async Task OnGetAsync()
         {
             // TODO: Reemplazar con llamadas a servicios cuando el backend esté listo
-            Usuario = DatosFicticios.GetUsuario();
-            
-            var apiarioModels = await _apiariosService.GetApiarios();
+            //Usuario = DatosFicticios.GetUsuario();
+            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
+            Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
+                   ?? DatosFicticios.GetUsuario(); // fallback si falla
+
+            var apiarioModels = await _apiariosService.GetApiarios(usuarioId);
             Apiarios = ApiarioMapper.ToListItemDtos(apiarioModels);
         }
         public async Task<IActionResult> OnPostAgregarApiarioAsync()

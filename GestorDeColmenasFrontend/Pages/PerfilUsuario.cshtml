@@ -1,4 +1,4 @@
-@page
+Ôªø@page
 @model GestorDeColmenasFrontend.Pages.PerfilUsuarioModel
 @{
     Layout = null;
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mi Perfil - GestiÛn de Apiarios</title>
+    <title>Mi Perfil - Gesti√≥n de Apiarios</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -50,22 +50,20 @@
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
     <div class="flex h-screen w-full flex-col lg:flex-row">
 
-        <!-- Sidebar (solo escritorio lg+) -->
+        <!-- Sidebar (sin cambios) -->
         <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4">
-            <!-- Logo y tÌtulo -->
             <div class="mb-6 flex items-center gap-3 px-2">
                 <div class="text-primary size-6">
                     <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21.92,8.44l-8-4.57a2,2,0,0,0-1.84,0l-8,4.57a2,2,0,0,0-1,1.73V13.8a2,2,0,0,0,.13,2.44,1,1,0,0,0,.87.56H12a1,1,0,0,0,1-1V13.5a1,1,0,0,1,2,0V20a1,1,0,0,0,2,0V13.5a1,1,0,0,1,2,0v2.3a2,2,0,0,0,1,1.73l.2,0a2,2,0,0,0,1.72-1,2,2,0,0,0,.08-1V10.17A2,2,0,0,0,21.92,8.44ZM12,11.25a2.75,2.75,0,1,1,2.75-2.75A2.75,2.75,0,0,1,12,11.25Z"></path>
                     </svg>
                 </div>
-                <h1 class="text-lg font-bold">GestiÛn de Apiarios</h1>
+                <h1 class="text-lg font-bold">Gesti√≥n de Apiarios</h1>
             </div>
 
-            <!-- Info usuario (solo escritorio) -->
             <div class="hidden lg:flex items-center gap-3 px-2 mb-6">
-                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")" 
-                     alt="Avatar" 
+                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
+                     alt="Avatar"
                      class="h-10 w-10 rounded-full object-cover" />
                 <div class="flex flex-col">
                     <span class="text-base font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</span>
@@ -73,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- NavegaciÛn escritorio -->
             <nav class="flex flex-col gap-2">
                 <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/PerfilUsuario">
                     <span class="material-symbols-outlined">person</span>
@@ -93,11 +90,10 @@
                 </a>
             </nav>
 
-            <!-- Cerrar sesiÛn (solo escritorio) -->
             <div class="mt-auto">
                 <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
                     <span class="material-symbols-outlined">logout</span>
-                    <span class="text-sm">Cerrar SesiÛn</span>
+                    <span class="text-sm">Cerrar Sesi√≥n</span>
                 </a>
             </div>
         </aside>
@@ -105,7 +101,7 @@
         <!-- Contenido principal -->
         <div class="flex-1 flex flex-col min-h-screen lg:min-h-0">
 
-            <!-- Header mÛvil -->
+            <!-- Header m√≥vil -->
             <header class="md:hidden flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark">
                 <a href="/Dashboard" class="p-2 -ml-2">
                     <span class="material-symbols-outlined">arrow_back</span>
@@ -117,14 +113,10 @@
             <!-- Contenido -->
             <main class="flex-1 overflow-y-auto p-6 md:p-8">
                 <div class="mx-auto max-w-4xl">
-
-                    <!-- TÌtulo -->
                     <h2 class="hidden md:block mb-8 text-4xl font-black tracking-tight">Mi Perfil</h2>
 
-                    <!-- Card del perfil -->
                     <div class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden">
 
-                        <!-- SecciÛn foto de perfil -->
                         <div class="border-b border-border-light dark:border-border-dark p-6">
                             <div class="flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-6">
                                 <div class="relative flex-shrink-0">
@@ -142,7 +134,6 @@
                             </div>
                         </div>
 
-                        <!-- Formulario -->
                         <form method="post" asp-page-handler="GuardarPerfil" class="p-6">
                             @Html.AntiForgeryToken()
 
@@ -155,46 +146,103 @@
                                            type="text" />
                                 </div>
 
-                                <!-- Apellido -->
+                                <!-- N√∫mero de Apicultor -->
                                 <div>
-                                    <label class="block text-sm md:text-base font-medium mb-2" for="apellido">Apellido</label>
-                                    <input asp-for="Usuario.Apellido"
+                                    <label class="block text-sm md:text-base font-medium mb-2" for="numeroApicultor">N√∫mero de Apicultor</label>
+                                    <input asp-for="Usuario.NumeroApicultor"
                                            class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                                            type="text" />
                                 </div>
 
                                 <!-- Email (span completo) -->
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm md:text-base font-medium mb-2" for="email">Correo ElectrÛnico</label>
+                                    <label class="block text-sm md:text-base font-medium mb-2" for="email">Correo Electr√≥nico</label>
                                     <input asp-for="Usuario.Email"
                                            class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-3 text-text-muted cursor-not-allowed"
                                            type="email"
                                            readonly />
                                 </div>
 
-                                <!-- TelÈfono (solo tablet/escritorio) -->
-                                <div class="hidden md:block">
-                                    <label class="block text-sm md:text-base font-medium mb-2" for="telefono">TelÈfono</label>
-                                    <input asp-for="Usuario.Telefono"
+                                <!-- Tel√©fono -->
+                                <div>
+                                    <label class="block text-sm md:text-base font-medium mb-2" for="telefono">Tel√©fono</label>
+                                    <input asp-for="Usuario.NumeroTelefono"
                                            class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                                            type="tel" />
                                 </div>
 
-                                <!-- N˙mero de Apicultor -->
-                                <div class="hidden md:block">
-                                    <label class="block text-sm md:text-base font-medium mb-2" for="numeroApicultor">N˙mero de Apicultor</label>
-                                    <input asp-for="Usuario.NumeroApicultor"
-                                           class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                                           type="text" />
+                                <!-- Canal preferido -->
+                                <div>
+                                    <label class="block text-sm md:text-base font-medium mb-2">Canal de notificaci√≥n</label>
+                                    <div class="flex gap-3">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input asp-for="Usuario.MedioDeComunicacionDePreferencia" type="radio" value="EMAIL" class="h-4 w-4" />
+                                            <span class="text-sm">Email</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input asp-for="Usuario.MedioDeComunicacionDePreferencia" type="radio" value="SMS" class="h-4 w-4" />
+                                            <span class="text-sm">SMS</span>
+                                        </label>
+                                    </div>
                                 </div>
 
-                                <!-- ContraseÒa (solo mÛvil) -->
+                                <!-- Contrase√±a: versi√≥n escritorio (md+) con dise√±o igual a Login/Registro -->
+                                <div class="hidden md:block md:col-span-2">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm md:text-base font-medium mb-2" for="nuevaContrasenaDesktop">Nueva Contrase√±a</label>
+                                            <div class="relative">
+                                                <input asp-for="NuevaContrasena"
+                                                       id="nuevaContrasenaDesktop"
+                                                       class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                                       type="password"
+                                                       placeholder="Dejar vac√≠o para no cambiar" />
+                                                <button type="button"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                        data-toggle-password="nuevaContrasenaDesktop"
+                                                        aria-label="Mostrar/ocultar contrase√±a">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                                </button>
+                                            </div>
+                                            <span asp-validation-for="NuevaContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm md:text-base font-medium mb-2" for="confirmarContrasenaDesktop">Confirmar Contrase√±a</label>
+                                            <div class="relative">
+                                                <input asp-for="ConfirmarContrasena"
+                                                       id="confirmarContrasenaDesktop"
+                                                       class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                                       type="password"
+                                                       placeholder="Repite la nueva contrase√±a" />
+                                                <button type="button"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                        data-toggle-password="confirmarContrasenaDesktop"
+                                                        aria-label="Mostrar/ocultar contrase√±a">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                                </button>
+                                            </div>
+                                            <span asp-validation-for="ConfirmarContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contrase√±a (solo m√≥vil) con dise√±o igual a Login/Registro -->
                                 <div class="md:hidden">
-                                    <label class="block text-sm font-medium mb-2" for="password">Nueva ContraseÒa</label>
-                                    <input asp-for="NuevaContrasena"
-                                           class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                                           type="password"
-                                           placeholder="Dejar vacÌo para no cambiar" />
+                                    <label class="block text-sm font-medium mb-2" for="nuevaContrasenaMobile">Nueva Contrase√±a</label>
+                                    <div class="relative">
+                                        <input asp-for="NuevaContrasena"
+                                               id="nuevaContrasenaMobile"
+                                               class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                               type="password"
+                                               placeholder="Dejar vac√≠o para no cambiar" />
+                                        <button type="button"
+                                                class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                data-toggle-password="nuevaContrasenaMobile"
+                                                aria-label="Mostrar/ocultar contrase√±a">
+                                            <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="NuevaContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
                                 </div>
                             </div>
 
@@ -214,7 +262,7 @@
                 </div>
             </main>
 
-            <!-- NavegaciÛn mÛvil -->
+            <!-- Navegaci√≥n m√≥vil -->
             <nav class="md:hidden sticky bottom-0 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark shadow-lg">
                 <div class="flex justify-around p-2">
                     <a class="flex flex-col items-center justify-center p-2 rounded-lg text-primary" href="/PerfilUsuario">
@@ -233,5 +281,28 @@
             </nav>
         </div>
     </div>
+
+    @section Scripts {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Maneja todos los botones que tengan el atributo data-toggle-password
+                document.querySelectorAll('[data-toggle-password]').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var targetId = btn.getAttribute('data-toggle-password');
+                        var input = document.getElementById(targetId);
+                        if (!input) return;
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+                        } else {
+                            input.type = 'password';
+                            btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+                        }
+                    });
+                });
+            });
+        </script>
+    }
 </body>
 </html>

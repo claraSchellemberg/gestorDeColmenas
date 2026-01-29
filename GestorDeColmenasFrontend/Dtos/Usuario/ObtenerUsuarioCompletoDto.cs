@@ -2,14 +2,16 @@
 
 namespace GestorDeColmenasFrontend.Dtos.Usuario
 {
-    public class PerfilUsuarioDto
+    /// DTO para los datos del usuario que vienen dentro del token
+    public class ObtenerUsuarioCompletoDto
     {
+        public int Id { get; set; }
         public string? Nombre { get; set; }
         public string? Email { get; set; }
+        public string? Contraseña { get; set; }
         public string? NumeroTelefono { get; set; }
         public string? NumeroApicultor { get; set; }
         public CanalPreferidoNotificacion MedioDeComunicacionDePreferencia { get; set; }
-        public string? FotoPerfil { get; set; }
-        
+        public string? FotoPerfil { get; set; } //lo dejamos?... habria que agregarlo a la base y podria ser opcional
     }
 }

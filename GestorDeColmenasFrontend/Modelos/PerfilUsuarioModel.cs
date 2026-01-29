@@ -1,8 +1,6 @@
-﻿using GestorDeColmenasFrontend.Modelos;
-
-namespace GestorDeColmenasFrontend.Dtos.Usuario
+﻿namespace GestorDeColmenasFrontend.Modelos
 {
-    public class PerfilUsuarioDto
+    public class PerfilUsuarioModel
     {
         public string? Nombre { get; set; }
         public string? Email { get; set; }
@@ -10,6 +8,5 @@ namespace GestorDeColmenasFrontend.Dtos.Usuario
         public string? NumeroApicultor { get; set; }
         public CanalPreferidoNotificacion MedioDeComunicacionDePreferencia { get; set; }
         public string? FotoPerfil { get; set; }
-        
     }
 }

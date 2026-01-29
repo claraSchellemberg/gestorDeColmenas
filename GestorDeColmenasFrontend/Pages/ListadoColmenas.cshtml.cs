@@ -1,8 +1,10 @@
 using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Helpers;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
+using GestorDeColmenasFrontend.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -13,15 +15,19 @@ namespace GestorDeColmenasFrontend.Pages
         private readonly IColmenaService _colmenaService;
         private readonly IApiariosService _apiarioService;
         private readonly ILogger<ListadoColmenasModel> _logger;
+        //lo que agregue a partir de usuarios
+        private readonly IUsuarioService _usuarioService;
 
         public ListadoColmenasModel(
             IColmenaService colmenaService, 
             IApiariosService apiarioService,
-            ILogger<ListadoColmenasModel> logger)
+            ILogger<ListadoColmenasModel> logger,
+            IUsuarioService usuarioService)
         {
             _colmenaService = colmenaService;
             _apiarioService = apiarioService;
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
         public List<ColmenaListItemDto> Colmenas { get; set; } = new();
@@ -106,8 +112,11 @@ namespace GestorDeColmenasFrontend.Pages
         /// </summary>
         private async Task CargarDatosConErrores()
         {
-            Usuario = DatosFicticios.GetUsuario();
-            
+            //Usuario = DatosFicticios.GetUsuario();
+            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
+            Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
+                   ?? DatosFicticios.GetUsuario(); // fallback si falla
+
             try
             {
                 Colmenas = await _colmenaService.GetColmenasAsync();
@@ -121,7 +130,7 @@ namespace GestorDeColmenasFrontend.Pages
 
             try
             {
-                Apiarios = await _apiarioService.GetApiarios();
+                Apiarios = await _apiarioService.GetApiarios(usuarioId);
             }
             catch (Exception ex)
             {
