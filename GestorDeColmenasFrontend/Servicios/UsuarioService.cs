@@ -6,10 +6,8 @@ using System.Text.Json;
 
 namespace GestorDeColmenasFrontend.Servicios
 {
-    /// <summary>
-    /// Implementación del servicio de usuario.
-    /// Maneja la comunicación con el backend para autenticación y gestión de perfil.
-    /// </summary>
+    //Implementación del servicio de usuario.
+    //Maneja la comunicación con el backend para autenticación y gestión de perfil.
     public class UsuarioService : IUsuarioService
     {
         private readonly HttpClient _http;
@@ -21,9 +19,7 @@ namespace GestorDeColmenasFrontend.Servicios
             _logger = logger;
         }
 
-        /// <summary>
-        /// Autentica un usuario con sus credenciales
-        /// </summary>
+        //Autentica un usuario con sus credenciales
         public async Task<UsuarioSimpleDto?> AutenticarAsync(LoginUsuarioDto credenciales)
         {
             try
@@ -80,9 +76,7 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        /// <summary>
-        /// Obtiene el perfil completo del usuario
-        /// </summary>
+        //Obtiene el perfil completo del usuario
         public async Task<ObtenerUsuarioCompletoDto?> GetPerfilAsync(int usuarioId)
         {
             try
@@ -113,26 +107,37 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        /// <summary>
-        /// Actualiza el perfil del usuario
-        /// </summary>
         public async Task<bool> ActualizarPerfilAsync(int usuarioId, UsuarioCreateDto perfil)
         {
             try
             {
-                var response = await _http.PutAsJsonAsync($"Usuarios/{usuarioId}", perfil);
+                // Construir URI relativa y registrar BaseAddress + URI
+                var relativeUri = $"Usuarios/{usuarioId}";
+                var baseAddr = _http.BaseAddress?.ToString() ?? "<no-baseaddress-configurada>";
+                _logger.LogDebug("ActualizarPerfil - BaseAddress: {BaseAddress}, RelativeUri: {RelativeUri}", baseAddr, relativeUri);
 
+                // Opciones para producir JSON con nombres camelCase (backend espera "nombre", "email", "contraseña", ...)
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true
+                };
+
+                // Serializar y registrar body
+                var bodyJson = System.Text.Json.JsonSerializer.Serialize(perfil, options);
+                _logger.LogDebug("ActualizarPerfil - Body JSON: {BodyJson}", bodyJson);
+
+                var content = new StringContent(bodyJson, System.Text.Encoding.UTF8, "application/json");
+                var request = new HttpRequestMessage(HttpMethod.Put, relativeUri) { Content = content };
+                var response = await _http.SendAsync(request);
+
+                var respuestaContenido = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Perfil del usuario {UsuarioId} actualizado exitosamente", usuarioId);
                     return true;
                 }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Error al actualizar perfil del usuario {UsuarioId}: {StatusCode} - {ErrorContent}", usuarioId, response.StatusCode, errorContent);
-                    return false;
-                }
+                return false;
             }
             catch (HttpRequestException ex)
             {
@@ -146,9 +151,7 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        /// <summary>
-        /// Obtiene los datos mínimos del usuario actual (para header/sidebar)
-        /// </summary>
+        // Obtiene los datos mínimos del usuario actual (para header/sidebar)
         public async Task<UsuarioSimpleDto?> GetUsuarioActualAsync(int usuarioId)
         {
             try
@@ -179,9 +182,7 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        /// <summary>
         /// Registra un nuevo usuario en el backend
-        /// </summary>
         public async Task<RegistroUsuarioModel> RegistrarUsuarioAsync(UsuarioCreateDto dto)
         {
             try

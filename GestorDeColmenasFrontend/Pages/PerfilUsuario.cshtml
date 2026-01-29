@@ -50,7 +50,7 @@
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
     <div class="flex h-screen w-full flex-col lg:flex-row">
 
-        <!-- Sidebar (solo escritorio lg+) -->
+        <!-- Sidebar (sin cambios) -->
         <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4">
             <div class="mb-6 flex items-center gap-3 px-2">
                 <div class="text-primary size-6">
@@ -183,20 +183,66 @@
                                             <input asp-for="Usuario.MedioDeComunicacionDePreferencia" type="radio" value="SMS" class="h-4 w-4" />
                                             <span class="text-sm">SMS</span>
                                         </label>
-                                        <label class="flex items-center gap-2 cursor-not-allowed opacity-50">
-                                            <input asp-for="Usuario.MedioDeComunicacionDePreferencia" type="radio" value="WHATSAPP" class="hidden" disabled />
-                                            <span class="text-sm text-text-muted">WhatsApp (próximo)</span>
-                                        </label>
                                     </div>
                                 </div>
 
-                                <!-- Contraseña (solo móvil) -->
+                                <!-- Contraseña: versión escritorio (md+) con diseño igual a Login/Registro -->
+                                <div class="hidden md:block md:col-span-2">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm md:text-base font-medium mb-2" for="nuevaContrasenaDesktop">Nueva Contraseña</label>
+                                            <div class="relative">
+                                                <input asp-for="NuevaContrasena"
+                                                       id="nuevaContrasenaDesktop"
+                                                       class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                                       type="password"
+                                                       placeholder="Dejar vacío para no cambiar" />
+                                                <button type="button"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                        data-toggle-password="nuevaContrasenaDesktop"
+                                                        aria-label="Mostrar/ocultar contraseña">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                                </button>
+                                            </div>
+                                            <span asp-validation-for="NuevaContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm md:text-base font-medium mb-2" for="confirmarContrasenaDesktop">Confirmar Contraseña</label>
+                                            <div class="relative">
+                                                <input asp-for="ConfirmarContrasena"
+                                                       id="confirmarContrasenaDesktop"
+                                                       class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                                       type="password"
+                                                       placeholder="Repite la nueva contraseña" />
+                                                <button type="button"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                        data-toggle-password="confirmarContrasenaDesktop"
+                                                        aria-label="Mostrar/ocultar contraseña">
+                                                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                                </button>
+                                            </div>
+                                            <span asp-validation-for="ConfirmarContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contraseña (solo móvil) con diseño igual a Login/Registro -->
                                 <div class="md:hidden">
-                                    <label class="block text-sm font-medium mb-2" for="password">Nueva Contraseña</label>
-                                    <input asp-for="NuevaContrasena"
-                                           class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
-                                           type="password"
-                                           placeholder="Dejar vacío para no cambiar" />
+                                    <label class="block text-sm font-medium mb-2" for="nuevaContrasenaMobile">Nueva Contraseña</label>
+                                    <div class="relative">
+                                        <input asp-for="NuevaContrasena"
+                                               id="nuevaContrasenaMobile"
+                                               class="w-full h-12 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark px-4 pr-12 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                                               type="password"
+                                               placeholder="Dejar vacío para no cambiar" />
+                                        <button type="button"
+                                                class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-1"
+                                                data-toggle-password="nuevaContrasenaMobile"
+                                                aria-label="Mostrar/ocultar contraseña">
+                                            <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="NuevaContrasena" class="text-red-600 dark:text-red-400 text-xs mt-1"></span>
                                 </div>
                             </div>
 
@@ -235,5 +281,28 @@
             </nav>
         </div>
     </div>
+
+    @section Scripts {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Maneja todos los botones que tengan el atributo data-toggle-password
+                document.querySelectorAll('[data-toggle-password]').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var targetId = btn.getAttribute('data-toggle-password');
+                        var input = document.getElementById(targetId);
+                        if (!input) return;
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+                        } else {
+                            input.type = 'password';
+                            btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+                        }
+                    });
+                });
+            });
+        </script>
+    }
 </body>
 </html>
