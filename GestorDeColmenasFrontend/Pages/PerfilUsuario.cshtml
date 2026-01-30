@@ -50,50 +50,38 @@
 <body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
     <div class="flex h-screen w-full flex-col lg:flex-row">
 
-        <!-- Sidebar (sin cambios) -->
-        <aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark p-4">
-            <div class="mb-6 flex items-center gap-3 px-2">
-                <div class="text-primary size-6">
-                    <svg class="w-full h-full" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21.92,8.44l-8-4.57a2,2,0,0,0-1.84,0l-8,4.57a2,2,0,0,0-1,1.73V13.8a2,2,0,0,0,.13,2.44,1,1,0,0,0,.87.56H12a1,1,0,0,0,1-1V13.5a1,1,0,0,1,2,0V20a1,1,0,0,0,2,0V13.5a1,1,0,0,1,2,0v2.3a2,2,0,0,0,1,1.73l.2,0a2,2,0,0,0,1.72-1,2,2,0,0,0,.08-1V10.17A2,2,0,0,0,21.92,8.44ZM12,11.25a2.75,2.75,0,1,1,2.75-2.75A2.75,2.75,0,0,1,12,11.25Z"></path>
-                    </svg>
+        <aside class="w-64 border-r border-border-light dark:border-border-dark bg-white dark:bg-gray-900 hidden lg:flex flex-col sticky top-0 h-screen">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-8 mt-2">
+                    <img alt="Profile" class="w-10 h-10 rounded-full" src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")" />
+                    <div class="overflow-hidden">
+                        <p class="text-sm font-bold truncate">@(Model.Usuario?.Nombre ?? "Usuario")</p>
+                        <p class="text-xs text-gray-500 truncate">@(Model.Usuario?.Email ?? "")</p>
+                    </div>
                 </div>
-                <h1 class="text-lg font-bold">Gestión de Apiarios</h1>
+                <nav class="space-y-1">
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-accent-honey transition-colors" href="/PerfilUsuario">
+                        <span class="material-symbols-outlined">person</span>
+                        <span class="text-sm font-medium">Mi Perfil</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/Dashboard">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/ListadoApiarios">
+                        <span class="material-symbols-outlined">hive</span>
+                        <span class="text-sm font-medium">Apiarios</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="/ListadoColmenas">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">hive</span>
+                        <span class="text-sm font-bold">Colmenas</span>
+                    </a>
+                </nav>
             </div>
-
-            <div class="hidden lg:flex items-center gap-3 px-2 mb-6">
-                <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
-                     alt="Avatar"
-                     class="h-10 w-10 rounded-full object-cover" />
-                <div class="flex flex-col">
-                    <span class="text-base font-medium">@(Model.Usuario?.Nombre ?? "Usuario")</span>
-                    <span class="text-text-muted text-sm">@(Model.Usuario?.Email ?? "email@ejemplo.com")</span>
-                </div>
-            </div>
-
-            <nav class="flex flex-col gap-2">
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-text-light dark:text-text-dark font-medium" href="/PerfilUsuario">
-                    <span class="material-symbols-outlined">person</span>
-                    <span class="text-sm">Mi Perfil</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/Dashboard">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <span class="text-sm">Dashboard</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/ListadoApiarios">
-                    <span class="material-symbols-outlined">hive</span>
-                    <span class="text-sm">Apiarios</span>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="/ListadoColmenas">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">hive</span>
-                    <span class="text-sm">Colmenas</span>
-                </a>
-            </nav>
-
-            <div class="mt-auto">
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-text-muted" href="#">
+            <div class="mt-auto p-6 border-t border-border-light dark:border-border-dark">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors" href="#">
                     <span class="material-symbols-outlined">logout</span>
-                    <span class="text-sm">Cerrar Sesión</span>
+                    <span class="text-sm font-medium">Cerrar Sesión</span>
                 </a>
             </div>
         </aside>
@@ -123,7 +111,7 @@
                                     <img src="@(Model.Usuario?.FotoPerfil ?? "https://via.placeholder.com/150")"
                                          alt="Foto de perfil"
                                          class="w-24 h-24 md:w-28 md:h-28 lg:w-24 lg:h-24 rounded-full object-cover" />
-                                    <button class="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-card-light dark:border-card-dark bg-primary text-gray-800 hover:bg-accent-honey">
+                                    <button class="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-accent-honey dark:border-card-dark bg-primary/10 text-accent-honey-800 hover:bg-accent-honey">
                                         <span class="material-symbols-outlined text-base">edit</span>
                                     </button>
                                 </div>
@@ -249,11 +237,11 @@
                             <!-- Botones -->
                             <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-border-light dark:border-border-dark mt-6 pt-6">
                                 <a href="/Dashboard"
-                                   class="flex h-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/10 px-4 text-sm font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
+                                   class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 font-medium border btn border-gray-400/60 dark:border-gray-500/60 bg-transparent  hover:bg-gray-100 dark:hover:bg-gray-600">
                                     Cancelar
                                 </a>
                                 <button type="submit"
-                                        class="flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-bold text-gray-800 hover:bg-accent-honey transition-colors">
+                                        class="nline-flex items-center justify-center gap-2 rounded-lg bg-primary/10 text-accent-honey border-accent-honey border-2 px-6 py-2.5 text-sm font-bold shadow-sm transition-all hover:bg-accent-honey hover:text-white focus:ring-2 focus:ring-primary focus:ring-offset-2">
                                     Guardar Cambios
                                 </button>
                             </div>
