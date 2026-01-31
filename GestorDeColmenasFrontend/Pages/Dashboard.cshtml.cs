@@ -1,4 +1,3 @@
-using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Apiario;
 using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Helpers;
@@ -22,26 +21,61 @@ namespace GestorDeColmenasFrontend.Pages
             _usuarioService = usuarioService;
         }
 
+        [ViewData]
+        public string? ErrorMessage { get; set; }
         public DashboardViewModel ViewModel { get; set; } = new();
         public List<ApiarioModel> Apiarios { get; set; } = new();
 
         [BindProperty]
         public ApiarioCreateDto NuevoApiarioDto { get; set; } = new();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            //cargamos el usuario
-            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
-            //cargamos los apiarios en el mapa
-            Apiarios = await _apiariosService.GetApiarios(usuarioId);
-
-            ViewModel = new DashboardViewModel
+            try
             {
-                Metricas = await GetMetricasAsync(),
-                //Usuario = DatosFicticios.GetUsuario()
-                Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
-                   ?? new UsuarioSimpleDto() // fallback
-            };
+                //cargamos el usuario
+                int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session); 
+                if (usuarioId != 0)
+                {
+                    //cargamos los apiarios en el mapa
+                    Apiarios = await _apiariosService.GetApiarios(usuarioId);
+
+                    ViewModel = new DashboardViewModel
+                    {
+                        Metricas = await GetMetricasAsync(),
+                        Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
+                           ?? new UsuarioSimpleDto() // fallback
+                    };
+                    return Page();
+                }
+                else
+                {
+                    return RedirectToPage("/LoginUsuario");
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                // Expose the error to the Razor page and also keep a TempData fallback
+                ErrorMessage = $"Error cargando el dashboard: {ex.Message}";
+                TempData["ErrorMessage"] = ErrorMessage;
+
+                // Ensure ViewModel is set so the page can render safely
+                ViewModel = new DashboardViewModel
+                {
+                    Metricas = new DashboardMetricas
+                    {
+                        Apiarios = Apiarios?.Count ?? 0,
+                        Colmenas = 0,
+                        BuenEstado = 0,
+                        Alertas = 0
+                    },
+                    Usuario = new UsuarioSimpleDto()
+                };
+
+                // Do not return an object from an async Task method
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAgregarApiarioAsync()
@@ -69,30 +103,48 @@ namespace GestorDeColmenasFrontend.Pages
                 return Page();
             }
         }
+
         public async Task<DashboardMetricas> GetMetricasAsync()
         {
-            var todasLasColmenas = new List<ColmenaModel>();
-            //obtenemos las colmenas de todos los apiarios
-            foreach (var apiario in Apiarios)
+            try
             {
-                var colmenasDelApiario = await _colmenasService.GetColmenasPorApiarioAsync(apiario.Id);
-                todasLasColmenas.AddRange(colmenasDelApiario);
+                var todasLasColmenas = new List<ColmenaModel>();
+                //obtenemos las colmenas de todos los apiarios
+                foreach (var apiario in Apiarios)
+                {
+                    var colmenasDelApiario = await _colmenasService.GetColmenasPorApiarioAsync(apiario.Id);
+                    todasLasColmenas.AddRange(colmenasDelApiario);
+                }
+                //clasificamos las colmenas por estado
+                var colmenasBuenEstado = todasLasColmenas
+                    .Where(c => c.Estado == CondicionColmena.OPTIMO)
+                    .ToList();
+                var colmenasConAlertas = todasLasColmenas
+                    .Where(c => c.Estado == CondicionColmena.NECESITA_REVISION
+                    || c.Estado == CondicionColmena.EN_PELIGRO)
+                    .ToList();
+                return new DashboardMetricas
+                {
+                    Apiarios = Apiarios?.Count ?? 0,
+                    Colmenas = todasLasColmenas.Count,
+                    BuenEstado = colmenasBuenEstado.Count,
+                    Alertas = colmenasConAlertas.Count
+                };
             }
-            //clasificamos las colmenas por estado
-            var colmenasBuenEstado = todasLasColmenas
-                .Where(c => c.Estado == CondicionColmena.OPTIMO)
-                .ToList();
-            var colmenasConAlertas = todasLasColmenas
-                .Where(c => c.Estado == CondicionColmena.NECESITA_REVISION
-                || c.Estado == CondicionColmena.EN_PELIGRO)
-                .ToList();
-            return new DashboardMetricas
+            catch (Exception ex)
             {
-                Apiarios = Apiarios.Count,
-                Colmenas = todasLasColmenas.Count,
-                BuenEstado = colmenasBuenEstado.Count,
-                Alertas = colmenasConAlertas.Count
-            };
+                // Surface the error to the UI and return safe defaults
+                ErrorMessage = $"Error cargando métricas: {ex.Message}";
+                TempData["ErrorMessage"] = ErrorMessage;
+
+                return new DashboardMetricas
+                {
+                    Apiarios = Apiarios?.Count ?? 0,
+                    Colmenas = 0,
+                    BuenEstado = 0,
+                    Alertas = 0
+                };
+            }
         }
     }
 }

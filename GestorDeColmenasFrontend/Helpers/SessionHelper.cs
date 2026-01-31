@@ -20,7 +20,7 @@ namespace GestorDeColmenasFrontend.Helpers
         /// </summary>
         public static int GetUsuarioIdOrDefault(ISession session)
         {
-            return session.GetInt32(UsuarioIdKey) ?? Dev.DatosFicticios.UsuarioIdFicticio;
+            return session.GetInt32(UsuarioIdKey) ?? 0;
         }
     }
 }

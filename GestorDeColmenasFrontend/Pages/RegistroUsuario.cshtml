@@ -18,10 +18,15 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#EAB308",
+                        "primary": "#FFC107",
                         "primary-dark": "#CA8A04",
-                        "background-light": "#fafafa",
-                        "background-dark": "#1d1e20",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#1e293b",
+                        "text-light": "#374151",
+                        "text-dark": "#f3f4f6",
+                        "accent-honey": "#E69B00",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#374151",
                     },
                     fontFamily: {
                         "display": ["Manrope", "sans-serif"]
@@ -50,8 +55,8 @@
         
         <!-- Header -->
         <div class="pt-6 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 flex flex-col items-center">
-            <div class="mb-3 sm:mb-4 flex items-center justify-center w-14 sm:w-16 h-14 sm:h-16 bg-primary/10 rounded-full text-primary">
-                <svg class="w-8 sm:w-10 h-8 sm:h-10 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="mb-3 sm:mb-4 flex items-center justify-center w-14 sm:w-16 h-14 sm:h-16 bg-primary/10 rounded-full text-accent-honey">
+                <svg class="w-8 sm:w-10 h-8 sm:h-10 text-accent-honey" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L4.5 6.5v11L12 22l7.5-4.5v-11L12 2z"></path>
                     <path d="M12 22V12"></path>
                     <path d="M12 12l7.5-4.5"></path>
@@ -195,16 +200,24 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white h-9 sm:h-10 rounded-lg font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 transition-colors mt-1 shadow-sm shadow-yellow-900/10 active:scale-95">
+            <button type="submit"
+                    class="w-full flex items-center justify-center gap-2
+                     rounded-lg bg-primary/10 text-accent-honey
+                     border-2 border-accent-honey
+                     px-6 py-3 text-sm font-bold shadow-sm
+                     transition-colors
+                     hover:bg-accent-honey hover:text-white">
                 <span>Crear cuenta</span>
-                <span class="material-symbols-outlined text-sm hidden sm:inline">arrow_forward</span>
+                <span class="material-symbols-outlined hidden sm:inline text-lg relative top-[1px]">
+                    arrow_forward
+                </span>
             </button>
 
             <!-- Login Link -->
             <div class="text-center">
                 <p class="text-zinc-500 dark:text-zinc-400 text-xs">
                     ¿Ya tienes cuenta?
-                    <a class="text-primary-dark dark:text-primary font-bold hover:underline transition-colors" href="/LoginUsuario">Inicia sesión</a>
+                    <a class="text-accent-honey dark:text-accent-honey font-bold hover:underline transition-colors" href="/LoginUsuario">Inicia sesión</a>
                 </p>
             </div>
         </form>

@@ -31,28 +31,34 @@ namespace GestorDeColmenasFrontend.Pages
         public string MensajeExito { get; set; } = string.Empty;
 
         // Obtener y mostrar el perfil del usuario logueado
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             try
             {
                 int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
-
+                if (usuarioId == 0)
+                {
+                    return RedirectToPage("/LoginUsuario");
+                }
                 var perfilDto = await _usuarioService.GetPerfilAsync(usuarioId);
                 if (perfilDto is not null)
                 {
                     // Uso del mapper: asigna directamente a la propiedad binded
                     Usuario = UsuarioMapper.ToPerfilUsuarioDto(perfilDto);
+                    return Page();
                 }
                 else
                 {
                     _logger.LogWarning("No se obtuvo perfil del backend para UsuarioId={UsuarioId}", usuarioId);
                     MensajeError = "No se pudieron cargar los datos de perfil.";
                 }
+                return Page();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al cargar perfil del usuario");
                 MensajeError = "Error al cargar el perfil. Por favor intenta nuevamente.";
+                return Page();
             }
         }
 

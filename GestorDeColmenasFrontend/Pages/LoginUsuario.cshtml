@@ -18,10 +18,15 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#EAB308",
+                        "primary": "#FFC107",
                         "primary-dark": "#CA8A04",
-                        "background-light": "#fafafa",
-                        "background-dark": "#1d1e20",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#1e293b",
+                        "text-light": "#374151",
+                        "text-dark": "#f3f4f6",
+                        "accent-honey": "#E69B00",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#374151",
                     },
                     fontFamily: {
                         "display": ["Manrope", "sans-serif"]
@@ -49,8 +54,8 @@
     <div class="w-full max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-zinc-900 rounded-lg sm:rounded-xl soft-shadow overflow-hidden flex flex-col border border-zinc-100 dark:border-zinc-800">
         <!-- Header -->
         <div class="pt-8 sm:pt-10 md:pt-12 pb-6 sm:pb-8 px-4 sm:px-6 md:px-8 flex flex-col items-center">
-            <div class="mb-4 sm:mb-6 flex items-center justify-center w-16 sm:w-20 h-16 sm:h-20 bg-primary/10 rounded-full text-primary">
-                <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="mb-4 sm:mb-6 flex items-center justify-center w-16 sm:w-20 h-16 sm:h-20 bg-primary/10 rounded-full text-accent-honey">
+                <svg class="w-12 h-12 text-accent-honey" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L4.5 6.5v11L12 22l7.5-4.5v-11L12 2z"></path>
                     <path d="M12 22V12"></path>
                     <path d="M12 12l7.5-4.5"></path>
@@ -61,8 +66,8 @@
                     <path d="M12 7L7.5 4.5"></path>
                 </svg>
             </div>
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-center text-zinc-900 dark:text-white">Gestor de Apiarios</h1>
-            <p class="text-xs sm:text-sm md:text-base text-zinc-500 dark:text-zinc-400 mt-2 text-center">Bienvenido de nuevo, ingresa tus credenciales.</p>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-center text-dark-900 dark:text-white">Gestor de Apiarios</h1>
+            <p class="text-xs sm:text-sm md:text-base text-dark-500 dark:text-dark-400 mt-2 text-center">Bienvenido! Ingrese tus credenciales.</p>
         </div>
 
         <!-- Error Message -->
@@ -77,12 +82,12 @@
         <form method="post" class="px-4 sm:px-6 md:px-8 pb-8 sm:pb-10 flex flex-col gap-4 sm:gap-5 md:gap-6">
             <!-- Email Field -->
             <div class="flex flex-col gap-2">
-                <label class="text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm font-semibold flex items-center gap-2">
+                <label class="text-dark-700 dark:text-light-300 text-xs sm:text-sm font-semibold flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">mail</span>
                     <span>Correo electrónico</span>
                 </label>
                 <input asp-for="Correo" 
-                       class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-10 sm:h-11 md:h-12 px-3 sm:px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all" 
+                       class="form-input w-full rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-zinc-800 text-dark-900 dark:text-white h-10 sm:h-11 md:h-12 px-3 sm:px-4 focus:ring-2 focus:ring-primary/20 focus:border-accent-honey placeholder:text-zinc-400 text-xs sm:text-sm transition-all" 
                        placeholder="ejemplo@correo.com" 
                        type="email"
                        required />
@@ -92,7 +97,7 @@
             <!-- Password Field -->
             <div class="flex flex-col gap-2">
                 <div class="flex items-center justify-between">
-                    <label class="text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm font-semibold flex items-center gap-2">
+                    <label class="text-dark-700 dark:text-light-300 text-xs sm:text-sm font-semibold flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm">lock</span>
                         <span>Contraseña</span>
                     </label>
@@ -101,8 +106,8 @@
                 <div class="relative">
                     <input asp-for="Contraseña" 
                            id="passwordInput"
-                           class="form-input w-full rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white h-10 sm:h-11 md:h-12 px-3 sm:px-4 pr-12 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400 text-xs sm:text-sm transition-all" 
-                           placeholder="••••••••" 
+                           class="form-input w-full rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-zinc-800 text-dark-900 dark:text-white h-10 sm:h-11 md:h-12 px-3 sm:px-4 focus:ring-2 focus:ring-primary/20 focus:border-accent-honey placeholder:text-zinc-400 text-xs sm:text-sm transition-all"
+                           placeholder="••••••••"
                            type="password"
                            required />
                     <button type="button" 
@@ -117,10 +122,19 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white h-10 sm:h-11 md:h-12 rounded-lg font-bold text-xs sm:text-base tracking-wide flex items-center justify-center gap-2 transition-colors mt-2 shadow-sm shadow-yellow-900/10 active:scale-95">
+            <button type="submit"
+                    class="w-full flex items-center justify-center gap-2
+                     rounded-lg bg-primary/10 text-accent-honey
+                     border-2 border-accent-honey
+                     px-6 py-3 text-sm font-bold shadow-sm
+                     transition-colors
+                     hover:bg-accent-honey hover:text-white">
                 <span>Iniciar Sesión</span>
-                <span class="material-symbols-outlined text-base sm:text-lg md:text-xl hidden sm:inline">arrow_forward</span>
+                <span class="material-symbols-outlined hidden sm:inline text-lg relative top-[1px]">
+                    arrow_forward
+                </span>
             </button>
+
 
             <!-- Divider -->
             <div class="relative my-2 sm:my-4">
@@ -136,7 +150,7 @@
             <div class="text-center">
                 <p class="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm">
                     ¿Aún no tienes cuenta?
-                    <a class="text-primary-dark dark:text-primary font-bold hover:underline transition-colors" href="/RegistroUsuario">Regístrate</a>
+                    <a class="text-accent-honey dark:text-accent-honey font-bold hover:underline transition-colors" href="/RegistroUsuario">Regístrate</a>
                 </p>
             </div>
         </form>
