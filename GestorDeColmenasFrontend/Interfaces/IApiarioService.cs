@@ -7,7 +7,7 @@ namespace GestorDeColmenasFrontend.Interfaces
 {
     public interface IApiariosService
     {
-        Task<List<ApiarioModel>> GetApiarios();
+        Task<List<ApiarioModel>> GetApiarios(int usuarioId);
         Task<ApiarioModel> GetApiarioPorNombreYUsuario(string nombre, int usuarioId);
         Task<DashboardMetricas?> GetMetricasAsync();
         Task<UsuarioSimpleDto?> GetUsuarioAsync();

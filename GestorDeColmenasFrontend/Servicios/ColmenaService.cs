@@ -1,7 +1,8 @@
 ﻿using GestorDeColmenasFrontend.Dtos.Colmena;
-using GestorDeColmenasFrontend.Dtos.Mediciones;
+using GestorDeColmenasFrontend.Dtos.Registros;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
+using System.Text.Json;
 
 namespace GestorDeColmenasFrontend.Servicios
 {
@@ -75,7 +76,7 @@ namespace GestorDeColmenasFrontend.Servicios
             try
             {
                 var resp = await _http.GetAsync($"/Colmenas/apiario/{apiarioId}");
-                
+
                 if (resp.IsSuccessStatusCode)
                 {
                     var colmenas = await resp.Content.ReadFromJsonAsync<List<ColmenaModel>>();
@@ -103,9 +104,86 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        public Task<List<RegistroMedicionDto>> GetHistorialMedicionesAsync(int colmenaId, int pagina = 1, int registrosPorPagina = 10)
+        public async Task<List<RegistroGetDto>> GetHistorialMedicionesAsync(int idColmena, int pagina = 1, int registrosPorPagina = 10)
         {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
+            try
+            {
+                var resp = await _http.GetAsync($"/Registro/colmena/{idColmena}?pagina={pagina}&registrosPorPagina={registrosPorPagina}");
+                var content = await resp.Content.ReadAsStringAsync();
+                
+                if (!resp.IsSuccessStatusCode)
+                {
+                    throw new InvalidOperationException($"Error obteniendo historial de mediciones: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+                }
+                
+                var options = new JsonSerializerOptions 
+                { 
+                    PropertyNameCaseInsensitive = true 
+                };
+
+                using var doc = JsonDocument.Parse(content);
+                if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                {
+                    _logger.LogWarning("La respuesta no es un array JSON. RootKind={Kind}", doc.RootElement.ValueKind);
+                    return new List<RegistroGetDto>();
+                }
+                
+                var lista = new List<RegistroGetDto>();
+                foreach (var item in doc.RootElement.EnumerateArray())
+                {
+                    string? tipoRegistro = null;
+                    
+                    // Try both camelCase and PascalCase
+                    if (item.TryGetProperty("tipoRegistro", out var tipoProp))
+                    {
+                        tipoRegistro = tipoProp.GetString();
+                    }
+                    else if (item.TryGetProperty("TipoRegistro", out tipoProp))
+                    {
+                        tipoRegistro = tipoProp.GetString();
+                    }
+
+                    _logger.LogDebug("raw registro json: {Json}", item.GetRawText());
+                    try
+                    {
+                        switch (tipoRegistro?.ToLowerInvariant())
+                        {
+                            case "medicioncolmena":
+                                var m = JsonSerializer.Deserialize<RegistroMedicionColmenaGetDto>(item.GetRawText(), options);
+                                if (m != null) lista.Add(m);
+                                break;
+
+                            case "sensor":
+                                var s = JsonSerializer.Deserialize<RegistroSensorGetDto>(item.GetRawText(), options);
+                                if (s != null) lista.Add(s);
+                                break;
+
+                            default:
+                                _logger.LogWarning("TipoRegistro desconocido o nulo: {TipoRegistro}", tipoRegistro);
+                                var baseDto = JsonSerializer.Deserialize<RegistroGetDto>(item.GetRawText(), options);
+                                if (baseDto != null) lista.Add(baseDto);
+                                break;
+                        }
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        _logger.LogError(jsonEx, "Error deserializando registro del historial. TipoRegistro: {TipoRegistro}, Json: {Json}", 
+                            tipoRegistro, item.GetRawText());
+                    }
+
+                }
+                return lista;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Error de conexión al obtener historial de mediciones para colmena {IdColmena}", idColmena);
+                throw new InvalidOperationException("No se pudo conectar con el servidor. Verifique su conexión.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado al obtener historial de mediciones para colmena {IdColmena}", idColmena);
+                throw new InvalidOperationException("Ocurrió un error inesperado al obtener el historial de mediciones.", ex);
+            }
         }
         public async Task<ColmenaModel> RegistrarAsync(int apiarioId, ColmenaCreateDto dto)
         {

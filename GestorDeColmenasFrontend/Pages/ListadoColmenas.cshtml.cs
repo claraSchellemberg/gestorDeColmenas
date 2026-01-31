@@ -1,8 +1,9 @@
-using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Usuario;
+using GestorDeColmenasFrontend.Helpers;
 using GestorDeColmenasFrontend.Interfaces;
 using GestorDeColmenasFrontend.Modelos;
+using GestorDeColmenasFrontend.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -13,15 +14,19 @@ namespace GestorDeColmenasFrontend.Pages
         private readonly IColmenaService _colmenaService;
         private readonly IApiariosService _apiarioService;
         private readonly ILogger<ListadoColmenasModel> _logger;
+        //lo que agregue a partir de usuarios
+        private readonly IUsuarioService _usuarioService;
 
         public ListadoColmenasModel(
             IColmenaService colmenaService, 
             IApiariosService apiarioService,
-            ILogger<ListadoColmenasModel> logger)
+            ILogger<ListadoColmenasModel> logger,
+            IUsuarioService usuarioService)
         {
             _colmenaService = colmenaService;
             _apiarioService = apiarioService;
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
         public List<ColmenaListItemDto> Colmenas { get; set; } = new();
@@ -43,11 +48,14 @@ namespace GestorDeColmenasFrontend.Pages
         public int? ApiarioId { get; set; }
         
         public string? ApiarioNombreFiltro { get; set; }
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            await CargarDatosConErrores();
+            var resultadoDeCarga = await CargarDatosConErrores();
+
+            if (resultadoDeCarga is RedirectToPageResult) return resultadoDeCarga;
+
             //filtrar si viene el parametro apiarioId
-            if(ApiarioId.HasValue)
+            if (ApiarioId.HasValue)
             {
                 Colmenas = Colmenas.Where(c => c.ApiarioId == ApiarioId.Value).ToList();
             }
@@ -57,10 +65,11 @@ namespace GestorDeColmenasFrontend.Pages
                 Colmenas = Estado switch
                 {
                     "OPTIMO" => Colmenas.Where(c => c.Estado == CondicionColmena.OPTIMO).ToList(),
-                    "ALERTA" => Colmenas.Where(c => c.Estado != CondicionColmena.OPTIMO).ToList(),
+                    "ALERTA" => Colmenas.Where(c => c.Estado != CondicionColmena.EN_PELIGRO).ToList(),
                     _ => Colmenas
                 };
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAgregarColmenaAsync()
@@ -104,30 +113,39 @@ namespace GestorDeColmenasFrontend.Pages
         /// Loads all data, collecting errors instead of silently ignoring them.
         /// This allows the page to render partially while still informing the user of issues.
         /// </summary>
-        private async Task CargarDatosConErrores()
+        private async Task<IActionResult> CargarDatosConErrores()
         {
-            Usuario = DatosFicticios.GetUsuario();
-            
-            try
+            //Usuario = DatosFicticios.GetUsuario();
+            int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
+            if (usuarioId == 0)
             {
-                Colmenas = await _colmenaService.GetColmenasAsync();
+                return RedirectToPage("/LoginUsuario");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error al cargar colmenas");
-                ErroresCarga.Add($"No se pudieron cargar las colmenas: {ex.Message}");
-                Colmenas = new List<ColmenaListItemDto>();
-            }
+                Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId);
+                try
+                {
+                    Colmenas = await _colmenaService.GetColmenasAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error al cargar colmenas");
+                    ErroresCarga.Add($"No se pudieron cargar las colmenas: {ex.Message}");
+                    Colmenas = new List<ColmenaListItemDto>();
+                }
 
-            try
-            {
-                Apiarios = await _apiarioService.GetApiarios();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al cargar apiarios");
-                ErroresCarga.Add($"No se pudieron cargar los apiarios: {ex.Message}");
-                Apiarios = new List<ApiarioModel>();
+                try
+                {
+                    Apiarios = await _apiarioService.GetApiarios(usuarioId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error al cargar apiarios");
+                    ErroresCarga.Add($"No se pudieron cargar los apiarios: {ex.Message}");
+                    Apiarios = new List<ApiarioModel>();
+                }
+                return Page();
             }
         }
     }    

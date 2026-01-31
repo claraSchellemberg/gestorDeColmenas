@@ -9,8 +9,16 @@ namespace GestorDeColmenasFrontend.Servicios
 {
     public class ApiarioService : IApiariosService
     {
+        
         private readonly HttpClient _http;
-        public ApiarioService(HttpClient http) => _http = http;
+        //agrego cambios para que traiga los apiarios solo para ese usuario
+        private readonly ILogger<ApiarioService> _logger;
+
+        public ApiarioService(HttpClient http, ILogger<ApiarioService> logger)
+        {
+            _http = http;
+            _logger = logger;
+        } //=> _http = http;
 
         public Task<ApiarioModel> GetApiarioPorNombreYUsuario(string nombre, int usuarioId)
         {
@@ -25,19 +33,35 @@ namespace GestorDeColmenasFrontend.Servicios
                 throw new InvalidOperationException($"Error obteniendo apiario: {(int)resp.Result.StatusCode} {resp.Result.ReasonPhrase}");
             }
         }
-
-        public async Task<List<ApiarioModel>> GetApiarios()
+        
+        //agrego cambios para que traiga so apiarios solo por el id del usuario
+        public async Task<List<ApiarioModel>> GetApiarios(int usuarioId)
         {
-            var resp = await _http.GetAsync("Apiarios");
-            
-            if (resp.IsSuccessStatusCode)
+            try
             {
-                var apiarios = await resp.Content.ReadFromJsonAsync<List<ApiarioModel>>();
-                return apiarios ?? new List<ApiarioModel>();
+                var resp = await _http.GetAsync($"Apiarios/usuario/{usuarioId}");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var apiarios = await resp.Content.ReadFromJsonAsync<List<ApiarioModel>>();
+                    _logger.LogInformation("Se obtuvieron {Count} apiarios para el usuario {usuarioId}", apiarios?.Count?? 0, usuarioId);
+                    return apiarios ?? new List<ApiarioModel>();
+                }
+                else
+                {
+                    var errorContent = await resp.Content.ReadAsStringAsync();
+                    _logger.LogWarning("Error obteniendo apiarios para el usuario {usuarioId}: {StatusCode}- {Error}", usuarioId, resp.StatusCode, errorContent);
+                    throw new InvalidOperationException($"Error obteniendo apiarios: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+                }
             }
-            else
+            catch (HttpRequestException ex)
             {
-                throw new InvalidOperationException($"Error obteniendo apiarios: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+                _logger.LogError(ex, "Error de conexión al obtener apiarios del usuario {usuarioId}", usuarioId);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado al obtener apiarios del usuario {usuarioId}", usuarioId);
+                throw;
             }
         }
 

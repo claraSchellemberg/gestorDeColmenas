@@ -1,0 +1,24 @@
+﻿body {
+}
+.registro-layout {
+    display: grid;
+    grid-template-rows: auto 1fr ;
+    gap: 2rem;
+}
+
+.registro-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.registro-table{
+    width:100%;
+}
+
+@media (max-width: 1024px) {
+    .registro-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
