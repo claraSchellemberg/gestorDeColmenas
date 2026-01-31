@@ -18,8 +18,6 @@ namespace GestorDeColmenasFrontend.Servicios
             _http = http;
             _logger = logger;
         }
-
-        //Autentica un usuario con sus credenciales
         public async Task<UsuarioSimpleDto?> AutenticarAsync(LoginUsuarioDto credenciales)
         {
             try
@@ -76,7 +74,6 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        //Obtiene el perfil completo del usuario
         public async Task<ObtenerUsuarioCompletoDto?> GetPerfilAsync(int usuarioId)
         {
             try
@@ -182,7 +179,6 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        /// Registra un nuevo usuario en el backend
         public async Task<RegistroUsuarioModel> RegistrarUsuarioAsync(UsuarioCreateDto dto)
         {
             try

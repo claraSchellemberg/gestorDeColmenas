@@ -1,4 +1,3 @@
-using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Apiario;
 using GestorDeColmenasFrontend.Dtos.Usuario;
 using GestorDeColmenasFrontend.Helpers;
@@ -26,16 +25,24 @@ namespace GestorDeColmenasFrontend.Pages
         [BindProperty]
         public ApiarioCreateDto NuevoApiario { get; set; } = new();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             // TODO: Reemplazar con llamadas a servicios cuando el backend esté listo
             //Usuario = DatosFicticios.GetUsuario();
             int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
-            Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
-                   ?? DatosFicticios.GetUsuario(); // fallback si falla
+            if (usuarioId == 0)
+            {
+                return RedirectToPage("/LoginUsuario");
+            }
+            else
+            {
+                Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId);
 
-            var apiarioModels = await _apiariosService.GetApiarios(usuarioId);
-            Apiarios = ApiarioMapper.ToListItemDtos(apiarioModels);
+                var apiarioModels = await _apiariosService.GetApiarios(usuarioId);
+                Apiarios = ApiarioMapper.ToListItemDtos(apiarioModels);
+                return Page();
+            }
+
         }
         public async Task<IActionResult> OnPostAgregarApiarioAsync()
         {

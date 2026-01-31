@@ -104,6 +104,12 @@
 
     <main class="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10">
         <div class="mx-auto max-w-7xl">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage) || TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @((TempData["ErrorMessage"] as string) ?? Model.ErrorMessage)
+                </div>
+            }
 
             <!-- Título + botón -->
             <div class="mb-6 flex flex-wrap items-center justify-between gap-4">

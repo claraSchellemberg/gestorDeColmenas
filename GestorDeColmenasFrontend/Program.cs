@@ -28,6 +28,8 @@ builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

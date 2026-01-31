@@ -80,10 +80,13 @@
                 </nav>
             </div>
             <div class="mt-auto p-6 border-t border-border-light dark:border-border-dark">
-                <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors" href="#">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span class="text-sm font-medium">Cerrar Sesión</span>
-                </a>
+                <form method="post" asp-page="/Logout" class="m-0 p-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors bg-transparent border-0">
+                        <span class="material-symbols-outlined">logout</span>
+                        <span class="text-sm font-medium">Cerrar Sesión</span>
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -137,9 +140,6 @@
                                                        title="Ver Detalles">
                                                         <span class="material-symbols-outlined text-xl text-text-muted">visibility</span>
                                                     </a>
-                                                    <button class="flex h-9 w-9 items-center justify-center rounded-lg text-accent-blue hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Editar">
-                                                        <span class="material-symbols-outlined text-xl">edit</span>
-                                                    </button>
                                                     <button class="btn-eliminar flex h-9 w-9 items-center justify-center rounded-lg text-accent-red hover:bg-red-50 dark:hover:bg-red-900/20"
                                                             title="Eliminar"
                                                             data-id="@apiario.Id"
@@ -277,14 +277,14 @@
             });
         });
 
-        // Botón Cancelar (No)
+        // Botón Cancelar
         document.getElementById("btnCancelarEliminar").onclick = () => {
             modalEliminar.classList.add("hidden");
             document.body.classList.remove("overflow-hidden");
             apiarioIdAEliminar = null;
         };
 
-        // Botón Confirmar (Sí)
+        // Botón Confirmar
         document.getElementById("btnConfirmarEliminar").onclick = async () => {
             if (!apiarioIdAEliminar) return;
 

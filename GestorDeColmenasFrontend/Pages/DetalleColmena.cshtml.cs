@@ -1,4 +1,3 @@
-using GestorDeColmenasFrontend.Dev;
 using GestorDeColmenasFrontend.Dtos.Colmena;
 using GestorDeColmenasFrontend.Dtos.Registros;
 using GestorDeColmenasFrontend.Dtos.Usuario;
@@ -37,40 +36,47 @@ namespace GestorDeColmenasFrontend.Pages
         {
             //Usuario = DatosFicticios.GetUsuario();
             int usuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
-            Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId)
-                   ?? DatosFicticios.GetUsuario(); // fallback si falla
-
-            try
+            if (usuarioId == 0)
             {
-                Colmena = await _colmenaService.GetColmenaDetalleAsync(id);
-                
-                if (Colmena is null)
-                {
-                    TempData["ToastError"] = "La colmena solicitada no existe.";
-                    return RedirectToPage("/ListadoColmenas");
-                }
-
-                TotalRegistros = Colmena.CantidadRegistros;
-                HistorialMediciones = await _colmenaService.GetHistorialMedicionesAsync(id, PaginaActual, RegistrosPorPagina);
-                
-                // Agregamos log de debugeo
-                _logger.LogInformation("HistorialMediciones Count: {Count}", HistorialMediciones.Count);
-                foreach (var registro in HistorialMediciones)
-                {
-                    _logger.LogInformation("Registro: Id={Id}, Tipo={Tipo}, Fecha={Fecha}, TempInt1={Temp1}, Peso={Peso}",
-                        registro.Id,
-                        registro.TipoRegistro,
-                        registro.FechaMedicion,
-                        registro.TempInterna1,
-                        registro.Peso);
-                }
+                return RedirectToPage("/LoginUsuario");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error al cargar detalle de colmena {idColmena}", id);
-                ErroresCarga.Add($"No se pudo cargar la colmena: {ex.Message}");
+
+                Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId);
+
+                try
+                {
+                    Colmena = await _colmenaService.GetColmenaDetalleAsync(id);
+
+                    if (Colmena is null)
+                    {
+                        TempData["ToastError"] = "La colmena solicitada no existe.";
+                        return RedirectToPage("/ListadoColmenas");
+                    }
+
+                    TotalRegistros = Colmena.CantidadRegistros;
+                    HistorialMediciones = await _colmenaService.GetHistorialMedicionesAsync(id, PaginaActual, RegistrosPorPagina);
+
+                    // Agregamos log de debugeo
+                    _logger.LogInformation("HistorialMediciones Count: {Count}", HistorialMediciones.Count);
+                    foreach (var registro in HistorialMediciones)
+                    {
+                        _logger.LogInformation("Registro: Id={Id}, Tipo={Tipo}, Fecha={Fecha}, TempInt1={Temp1}, Peso={Peso}",
+                            registro.Id,
+                            registro.TipoRegistro,
+                            registro.FechaMedicion,
+                            registro.TempInterna1,
+                            registro.Peso);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error al cargar detalle de colmena {idColmena}", id);
+                    ErroresCarga.Add($"No se pudo cargar la colmena: {ex.Message}");
+                }
+                return Page();
             }
-            return Page();
         }
     }
 }
