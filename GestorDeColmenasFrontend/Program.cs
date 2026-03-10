@@ -18,15 +18,15 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpClient<IApiariosService, ApiarioService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
 builder.Services.AddHttpClient<IColmenaService, ColmenaService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
 builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
 {
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("API_URL")!);
+    client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
