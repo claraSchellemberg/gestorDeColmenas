@@ -126,7 +126,7 @@ namespace GestorDeColmenasFrontend.Pages
                 Usuario = await _usuarioService.GetUsuarioActualAsync(usuarioId);
                 try
                 {
-                    Colmenas = await _colmenaService.GetColmenasAsync();
+                    Colmenas = await _colmenaService.GetColmenaPorUsuario(usuarioId);
                 }
                 catch (Exception ex)
                 {
