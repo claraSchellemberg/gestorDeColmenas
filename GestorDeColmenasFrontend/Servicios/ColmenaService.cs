@@ -42,6 +42,35 @@ namespace GestorDeColmenasFrontend.Servicios
                 throw new InvalidOperationException("Ocurrió un error inesperado al obtener la colmena.", ex);
             }
         }
+
+        public async Task<List<ColmenaListItemDto>> GetColmenaPorUsuario(int idUsuario)
+        {
+            try
+            {
+                var resp = await _http.GetAsync($"Colmenas/{idUsuario}/usuario");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var colmenas = await resp.Content.ReadFromJsonAsync<List<ColmenaListItemDto>>();
+                    return colmenas;
+                }
+                else
+                {
+                    var errorMsg = await resp.Content.ReadAsStringAsync();
+                    throw new InvalidOperationException($"Error obteniendo colmena: {(int)resp.StatusCode} {resp.ReasonPhrase}. {errorMsg}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Error de conexión al traer las colemanas del usuario", idUsuario);
+                throw new InvalidOperationException("No se pudo conectar con el servidor. Verifique su conexión.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado al traer las colemanas del usuario", idUsuario);
+                throw new InvalidOperationException("Ocurrió un error inesperado al obtener la colmena.", ex);
+            }
+        }
+
         public async Task<List<ColmenaListItemDto>> GetColmenasAsync()
         {
             try
