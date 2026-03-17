@@ -65,16 +65,6 @@ namespace GestorDeColmenasFrontend.Servicios
             }
         }
 
-        public Task<DashboardMetricas?> GetMetricasAsync()
-        {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
-        }
-
-        public Task<UsuarioSimpleDto?> GetUsuarioAsync()
-        {
-            throw new NotImplementedException("Backend no conectado. Usar DatosFicticios en el PageModel.");
-        }
-
         public async Task<ApiarioModel> RegistrarApiarioAsync(ApiarioCreateDto dto)
         {
             var resp = await _http.PostAsJsonAsync("Apiarios", dto);

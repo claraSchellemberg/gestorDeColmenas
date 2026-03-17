@@ -105,7 +105,6 @@ namespace GestorDeColmenasFrontend.Servicios
             try
             {
                 var resp = await _http.GetAsync($"/Colmenas/apiario/{apiarioId}");
-
                 if (resp.IsSuccessStatusCode)
                 {
                     var colmenas = await resp.Content.ReadFromJsonAsync<List<ColmenaModel>>();
