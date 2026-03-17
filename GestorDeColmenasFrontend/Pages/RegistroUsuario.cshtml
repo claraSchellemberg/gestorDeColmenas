@@ -9,10 +9,10 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Registro - Gestor de Apiarios</title>
-
-    <!-- FIX 1: config va ANTES que el CDN, así Tailwind lo lee al inicializarse -->
-    <script>
-        tailwind = { config: {} }; // placeholder para evitar errores si tarda
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -41,15 +41,6 @@
             },
         }
     </script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-
-    <!-- FIX 2: evitar que Brave / preferencia del SO fuercen dark mode -->
-    <script>
-        document.documentElement.classList.remove('dark');
-    </script>
-
     <style type="text/tailwindcss">
         body {
             font-family: 'Manrope', sans-serif;
@@ -60,12 +51,8 @@
         }
     </style>
 </head>
-
-<!-- FIX 3: h-screen overflow-hidden en lugar de min-h-screen -->
-<body class="bg-background-light dark:bg-background-dark h-screen overflow-hidden flex items-center justify-center p-3 sm:p-4 md:p-6">
-
-    <!-- FIX 3 (cont.): la card scrollea internamente, no la página -->
-    <div class="w-full max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-zinc-900 rounded-lg sm:rounded-xl soft-shadow flex flex-col border border-zinc-100 dark:border-zinc-800 max-h-[calc(100vh-1.5rem)] overflow-y-auto">
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
+    <div class="w-full max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-zinc-900 rounded-lg sm:rounded-xl soft-shadow overflow-hidden flex flex-col border border-zinc-100 dark:border-zinc-800">
 
         <!-- Header -->
         <div class="pt-6 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 flex flex-col items-center">
@@ -205,6 +192,7 @@
                     <button type="button"
                             class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors p-0.5"
                             id="togglePassword"
+                            onclick="togglePasswordVisibility()"
                             aria-label="Mostrar/ocultar contraseña">
                         <span class="material-symbols-outlined text-sm" id="visibilityIcon">visibility</span>
                     </button>
