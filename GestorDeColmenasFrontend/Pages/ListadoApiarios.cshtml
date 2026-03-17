@@ -196,6 +196,7 @@
     <div id="modalApiario" class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50">
         <div class="bg-card-light dark:bg-card-dark rounded-lg shadow-lg p-6 w-96 mx-4">
             <h2 class="text-lg font-bold mb-4">Nuevo Apiario</h2>
+            <div asp-validation-summary="All" class="text-red-600 text-sm mb-3"></div>
             <form method="post" asp-page-handler="AgregarApiario">
                 <div class="space-y-4">
                     <div>
@@ -312,6 +313,12 @@
                 document.body.classList.remove("overflow-hidden");
             }
         };
+        //Reabrir modal si hay errores de validación
+        const reabrir = "@(TempData["OpenApiarioModal"] ?? "false")".toLowerCase() === "true";
+        if (reabrir && modalAgregar) {
+            modalAgregar.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+        }
     </script>
 
     @Html.AntiForgeryToken()

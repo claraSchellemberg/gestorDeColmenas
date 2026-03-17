@@ -49,13 +49,13 @@ namespace GestorDeColmenasFrontend.Pages
             if (!ModelState.IsValid)
             {
                 await OnGetAsync();
+                TempData["OpenApiarioModal"] = true;
                 return Page();
             }
             try
             {
                 // Set the user ID from session (or default fake ID)
                 NuevoApiario.UsuarioId = SessionHelper.GetUsuarioIdOrDefault(HttpContext.Session);
-                
                 await _apiariosService.RegistrarApiarioAsync(NuevoApiario);
                 TempData["ToastSuccess"] = $"Apiario '{NuevoApiario.Nombre}' creado correctamente.";
                 return RedirectToPage();
@@ -64,6 +64,7 @@ namespace GestorDeColmenasFrontend.Pages
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
                 await OnGetAsync();
+                TempData["OpenApiarioModal"] = true;
                 return Page();
             }
         }

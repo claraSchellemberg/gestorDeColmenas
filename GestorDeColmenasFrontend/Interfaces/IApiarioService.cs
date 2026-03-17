@@ -9,8 +9,6 @@ namespace GestorDeColmenasFrontend.Interfaces
     {
         Task<List<ApiarioModel>> GetApiarios(int usuarioId);
         Task<ApiarioModel> GetApiarioPorNombreYUsuario(string nombre, int usuarioId);
-        Task<DashboardMetricas?> GetMetricasAsync();
-        Task<UsuarioSimpleDto?> GetUsuarioAsync();
         Task<ApiarioModel> RegistrarApiarioAsync(ApiarioCreateDto dto);
         Task<ServiceResult> EliminarApiarioAsync(int id);
     }
