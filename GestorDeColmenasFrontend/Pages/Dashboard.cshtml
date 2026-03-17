@@ -159,6 +159,7 @@
                  class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                 <div class="bg-white dark:bg-card-dark rounded-lg shadow-lg p-6 w-96">
                     <h2 class="text-lg font-bold mb-4">Nuevo Apiario</h2>
+                    <div asp-validation-summary="All" class="text-red-600 text-sm mb-3"></div>
                     <form method="post" asp-page-handler="AgregarApiario" novalidate>
                         @Html.AntiForgeryToken()
                         <label class="block mb-2 text-sm font-medium">Nombre</label>
